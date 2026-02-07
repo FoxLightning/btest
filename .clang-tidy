@@ -27,13 +27,13 @@ CheckOptions:
   value:           CamelCase
 
 - key:             readability-identifier-naming.VariableCase
-  value:           CamelCase
+  value:           camelCase
 - key:             readability-identifier-naming.ParameterCase
-  value:           CamelCase
+  value:           camelCase
 - key:             readability-identifier-naming.LocalVariableCase
-  value:           CamelCase
+  value:           camelCase
 - key:             readability-identifier-naming.MemberCase
-  value:           CamelCase
+  value:           camelCase
 
 - key:             readability-identifier-naming.MacroDefinitionCase
   value:           UPPER_CASE

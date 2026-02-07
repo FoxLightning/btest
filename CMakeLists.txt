@@ -16,4 +16,4 @@ if(CLANG_TIDY_EXE)
 endif()
 
 # Add subdirectories for different components
-add_subdirectory(btestapp)
+add_subdirectory(BTest)
