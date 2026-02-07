@@ -39,5 +39,5 @@ AlignConsecutiveDeclarations: Consecutive
 
 # TODO includes sort
 
-ReflowComments: false
+ReflowComments: Always
 ...

@@ -9,7 +9,7 @@ Checks: >
   misc-*,
   -modernize-use-trailing-return-type,
   -readability-magic-numbers
-WarningsAsErrors: false
+WarningsAsErrors: ""
 CheckOptions:
 # Naming cases
 - key:             readability-identifier-naming.ClassCase
