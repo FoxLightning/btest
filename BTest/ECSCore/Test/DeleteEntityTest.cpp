@@ -16,11 +16,11 @@ int main()
 
     std::println("Creating entities ...");
     constexpr int32_t          iterations{10};
-    constexpr std::string_view NamePattern{"Entity_{}"};
+    constexpr std::string_view namePattern{"Entity_{}"};
 
     for (int32_t i = 1; i <= iterations; ++i)
     {
-        const std::string name{std::format(NamePattern, i)};
+        const std::string name{std::format(namePattern, i)};
         auto              entity = manager.CreateEntity(name);
         std::println(R"(Creating entity with name "{}")", name);
         if (entity->GetName() != name)
@@ -47,7 +47,7 @@ int main()
         {
             continue;
         }
-        const std::string name{std::format(NamePattern, i)};
+        const std::string name{std::format(namePattern, i)};
         manager.DeleteEntity(name);
         if (manager.GetEntity(name))
         {
@@ -63,7 +63,7 @@ int main()
     std::println("Creating entities again ...");
     for (int32_t i = 1; i <= iterations; ++i)
     {
-        const std::string name{std::format(NamePattern, i)};
+        const std::string name{std::format(namePattern, i)};
         auto              entity = manager.CreateEntity(name);
         std::println(R"(Creating entity with name "{}")", name);
         if (entity->GetName() != name)
