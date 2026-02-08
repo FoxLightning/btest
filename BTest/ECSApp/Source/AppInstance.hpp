@@ -17,6 +17,7 @@ public:
     bool AddComponent(std::string EntityName, std::string ComponentType, std::string ComponentName) override;
     bool RemoveComponent(std::string EntityName, std::string ComponentType, std::string ComponentName) override;
     bool GetVisibleComponents(std::string EntityName, std::vector<std::string>& OutVisibleEntities) override;
+    size_t GetEntityCount() override;
 };
 
 } // namespace ecsapp

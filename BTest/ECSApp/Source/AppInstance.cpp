@@ -48,9 +48,15 @@ bool AppInstance::RemoveComponent(std::string EntityName, std::string ComponentT
     std::cout << std::format("Remove component {} from entity {} of type {}", ComponentName, EntityName, ComponentType);
     return true;
 }
+
 bool AppInstance::GetVisibleComponents(std::string EntityName, std::vector<std::string>& OutVisibleEntities)
 {
     std::cout << "Get visible components for entity: " << EntityName << "\n";
     return true;
+}
+
+size_t AppInstance::GetEntityCount()
+{
+    return 0;
 }
 } // namespace ecsapp
