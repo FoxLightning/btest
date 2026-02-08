@@ -5,7 +5,6 @@
 #include <ECSCore/Entity.hpp>
 #include <cstdint>
 #include <format>
-#include <ostream>
 #include <print>
 #include <string>
 #include <string_view>

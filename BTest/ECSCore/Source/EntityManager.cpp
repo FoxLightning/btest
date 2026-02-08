@@ -1,7 +1,7 @@
 ﻿// Proprietary & Confidential — All Rights Reserved — Copyright (c) 2026 Bohdan Lysychenko — See LICENSE.
 
 #include "ECSCore/EntityManager.hpp"
-#include <ECSCore/Entity.hpp>
+
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -9,6 +9,8 @@
 #include <memory>
 #include <string>
 #include <utility>
+
+#include <ECSCore/Entity.hpp>
 
 namespace ECSCore
 {
