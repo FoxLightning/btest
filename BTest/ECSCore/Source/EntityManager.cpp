@@ -35,6 +35,10 @@ bool EntityManager::DeleteEntity(std::string name)
 {
     const size_t deletedCount{std::erase_if(entityPool, [&name](const std::shared_ptr<Entity>& entity)
                                             { return entity->GetName() == name; })};
+    if (deletedCount == 1)
+    {
+        usedNames.erase(name);
+    }
     assert(deletedCount <= 1);
     return deletedCount > 0;
 }

@@ -13,3 +13,4 @@ target_include_directories(ECSCore
 )
 
 add_custom_test(CreateEntityTest ECSCore ECSCore)
+add_custom_test(DeleteEntityTest ECSCore ECSCore)
