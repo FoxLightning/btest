@@ -11,3 +11,5 @@ target_include_directories(ECSCore
         PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/Include
 )
+
+add_custom_test(CreateEntityTest ECSCore ECSCore)

@@ -10,6 +10,10 @@ Entity::Entity(std::string inName) : name(std::move(inName))
 {
 }
 
+Entity::~Entity()
+{
+}
+
 std::string Entity::GetName() const
 {
     return name;

@@ -27,6 +27,7 @@ std::shared_ptr<Entity> EntityManager::CreateEntity(std::string name)
     {
         return GetEntity(name);
     }
+    usedNames.insert(name);
     return entityPool.emplace_back(std::make_shared<Entity>(std::move(name)));
 }
 
