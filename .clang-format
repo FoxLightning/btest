@@ -27,6 +27,11 @@ SpaceBeforeParens: ControlStatements
 SpacesInParentheses: false
 SpaceInEmptyParentheses: false
 
+# Template formatting options
+AlwaysBreakTemplateDeclarations: Yes
+BreakTemplateDeclarations: Yes
+SpaceAfterTemplateKeyword: false
+
 # refs and pointers alignment
 PointerAlignment: Left
 ReferenceAlignment: Left

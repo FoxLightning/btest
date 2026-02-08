@@ -43,7 +43,7 @@ CheckOptions:
   value:           "E"
 - key:             readability-identifier-naming.InterfacePrefix
   value:           "I"
-- key:             readability-identifier-naming.TemplateParameterPrefix
+- key:             readability-identifier-naming.TemplatePrefix
   value:           "T"
 
 - key:             readability-identifier-naming.BooleanPrefix
