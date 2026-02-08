@@ -2,27 +2,15 @@
 
 #include "ECSCore/Object.hpp"
 
-#include <cassert>
-#include <cstdint>
+#include <memory>
 #include <string>
+#include <utility>
 
 namespace ECSCore
 {
-EObjectType GetObjectName(const std::string& name)
+
+Object::Object(std::string inName, const std::weak_ptr<Entity>& inOwner) : name(std::move(inName)), owner(inOwner)
 {
-    for (int32_t i = 0; i < GObjectTypeNames.size(); ++i)
-    {
-        if (name == GObjectTypeNames[i])
-        {
-            return static_cast<EObjectType>(i);
-        }
-    }
-    assert(false);
-    return EObjectType::Null;
 }
 
-EObjectType Object::GetObjectType() const
-{
-    return EObjectType::Null;
-}
 } // namespace ECSCore

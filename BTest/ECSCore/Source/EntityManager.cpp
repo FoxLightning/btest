@@ -2,74 +2,47 @@
 
 #include "ECSCore/EntityManager.hpp"
 
-#include <algorithm>
 #include <cassert>
-#include <cstddef>
 #include <functional>
 #include <memory>
+#include <ranges>
 #include <string>
-#include <utility>
 
 #include <ECSCore/Entity.hpp>
 
 namespace ECSCore
 {
 
-EntityManager::EntityManager()
+std::weak_ptr<Entity> EntityManager::CreateEntity(const std::string& name)
 {
+    auto [pair, result] = entityMap.emplace(name, std::make_shared<Entity>(name));
+    return result ? pair->second : nullptr;
 }
 
-EntityManager::~EntityManager()
+bool EntityManager::DeleteEntity(const std::string& name)
 {
-}
-
-std::shared_ptr<Entity> EntityManager::CreateEntity(std::string name)
-{
-    if (usedNames.contains(name))
-    {
-        return GetEntity(name);
-    }
-    usedNames.insert(name);
-    return entityPool.emplace_back(std::make_shared<Entity>(std::move(name)));
-}
-
-bool EntityManager::DeleteEntity(std::string name)
-{
-    const size_t deletedCount{std::erase_if(entityPool, [&name](const std::shared_ptr<Entity>& entity)
-                                            { return entity->GetName() == name; })};
-    if (deletedCount == 1)
-    {
-        usedNames.erase(name);
-    }
+    const auto deletedCount = entityMap.erase(name);
     assert(deletedCount <= 1);
     return deletedCount > 0;
 }
 
-std::shared_ptr<Entity> EntityManager::GetEntity(const std::string& name)
+std::weak_ptr<Entity> EntityManager::GetEntity(const std::string& name)
 {
-    return std::const_pointer_cast<Entity>(static_cast<const EntityManager*>(this)->GetEntity(name));
+    return std::const_pointer_cast<Entity>(static_cast<const EntityManager*>(this)->GetEntity(name).lock());
 }
 
-std::shared_ptr<Entity const> EntityManager::GetEntity(const std::string& name) const
+std::weak_ptr<Entity const> EntityManager::GetEntity(const std::string& name) const
 {
-    const auto iterator = std::ranges::find_if(entityPool, [&name](const std::shared_ptr<Entity>& entity)
-                                               { return entity->GetName() == name; });
-    return iterator != entityPool.end() ? *iterator : nullptr;
+    const auto iterator = entityMap.find(name);
+    return iterator != entityMap.end() ? iterator->second : nullptr;
 }
 
-void EntityManager::ForEachEntity(const std::function<void(Entity&)>& function)
+void EntityManager::ForEachEntity(const std::function<void(std::shared_ptr<Entity>)>& function) const
 {
-    for (auto& entity : entityPool)
+    for (const auto& val : entityMap | std::views::values)
     {
-        function(*entity);
-    }
-}
-
-void EntityManager::ForEachEntity(const std::function<void(Entity const&)>& function) const
-{
-    for (const auto& entity : entityPool)
-    {
-        function(*entity);
+        assert(val);
+        function(val);
     }
 }
 
