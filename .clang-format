@@ -43,6 +43,7 @@ AlignConsecutiveAssignments: Consecutive
 AlignConsecutiveDeclarations: Consecutive
 
 # Include sorting
+IncludeIsMainRegex: '$'
 IncludeBlocks: Regroup
 IncludeCategories:
   - Regex:           '^<[a-z_]+>'
