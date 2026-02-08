@@ -1,13 +1,13 @@
 ﻿// Proprietary & Confidential — All Rights Reserved — Copyright (c) 2026 Bohdan Lysychenko — See LICENSE.
 
-#include "ECSCore/EntityManager.hpp"
-
-#include <ECSCore/Entity.hpp>
 #include <cstdint>
 #include <format>
 #include <print>
 #include <string>
 #include <string_view>
+
+#include "ECSCore/Entity.hpp"
+#include "ECSCore/EntityManager.hpp"
 
 int main()
 {
