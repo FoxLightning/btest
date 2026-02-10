@@ -55,62 +55,41 @@ flowchart TD
 ```mermaid
 classDiagram
 %% Class definitions
-    class EntityManager {
-        - Entity[0..*]: EntitiePool
-        + TName: CreateEntity(Type)
-        + void: DeleteEntitie(ID)
-        + void: ForEachEntity(Function)
-    }
-
     class Entity {
-        - TName: ID
-        - ObjectManagerComponent[*]: ManagerTuple
-        + TName: GetID()
-        + ObjectManagerComponent&: GetManager(Type)
+        - ObjectManagerComponent[]: managerTuple
+        + ObjectManagerComponent*: GetManager(Type)
+        + ObjectManagerComponent*: CreateManager(Type)
     }
 
     class ObjectManagerComponent {
-        - Object[0..*]: ObjectPool
-        + TName: CreateObject(Type)
-        + void: DeleteObject(ID)
+        - Object[]: objectPool
         + void: ForEachObject(Function)
     }
 
     class Object {
-        - TName: ID
-        - Entitie*: Owner
-        - ObjectManagerComponent: ManagerTrait
-        + TName: GetID()
+        - Entitie*: owner
+        + Object: Object(Entity* owner)
     }
 
 %% relationships
-    EntityManager "1" *-- "0..*" Entity
     Entity "1" *-- "0..*" ObjectManagerComponent
     ObjectManagerComponent "1" *-- "0..*" Object
 ```
 
 ## ECS Core class responsibilities
 
-### EntityManager
-
-- Entity lifecycle management
-- Store and retrieve entities
-
 ### Entity
 
-- Store managers
-- Provide unique identifier
+- Store managers (Single manager per type)
 
 ### ObjectManagerComponent
 
 - Object lifecycle management
 - Store objects
-- Open for extension
 
 ### Object
 
-- Provide unique identifier
-- Open for extension
+- Provide object registration mechanism
 
 ## ECS App Class Diagram
 
@@ -118,24 +97,23 @@ classDiagram
 classDiagram
 %% Class definitions
     class ActionManagerComponent {
-        + ActionObject[0..*] GetVisibleActions()
+        + void : GetVisibleActions(ActionObject[]* visibleActions)
     }
 
     class ActionObject {
         <<abstract>>
-        + TName: GetType()
+        + string : ToString()
         + bool: IsVisible()
     }
 
     class IAPI {
         <<Interface>>
-        + void AddEntity(string: Name)
-        + void AddComponent(string: EntityName, Type, string: ComponentName)
-        + string[0..*] GetVisibleEntities()
+        + void AddObject(string: Name, bool visible)
+        + string[] GetVisibleEntities()
     }
 
     class APPInstance {
-        - EntitieManager Manager:
+        - Entity : rootEntity
         + void AddEntity(string: Name)
         + void AddComponent(string: EntityName, Type, string: ComponentName)
         + string[0..*] GetVisibleEntities()
