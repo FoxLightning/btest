@@ -13,7 +13,7 @@
 
 namespace ECSCore
 {
-class ObjectManager;
+class IObjectManager;
 
 class Entity : public std::enable_shared_from_this<Entity>
 {
@@ -44,14 +44,14 @@ class Entity : public std::enable_shared_from_this<Entity>
     }
 
   private:
-    std::unordered_map<std::type_index, std::shared_ptr<ObjectManager>> groupToManagerMap;
+    std::unordered_map<std::type_index, std::shared_ptr<IObjectManager>> groupToManagerMap;
 };
 
 template<typename tManagerType, typename... tArgs>
 std::weak_ptr<tManagerType> Entity::CreateManager(tArgs... args)
 {
     using NonConstManager = std::remove_const_t<tManagerType>;
-    static_assert(std::is_base_of_v<ObjectManager, NonConstManager>);
+    static_assert(std::is_base_of_v<IObjectManager, NonConstManager>);
     auto [objectManager, bSuccess] = groupToManagerMap.emplace(
         std::type_index(typeid(NonConstManager)), std::make_shared<NonConstManager>(args...));
     if (bSuccess)
@@ -65,7 +65,7 @@ template<typename tManagerType>
 bool Entity::DeleteManager()
 {
     using NonConstManager = std::remove_const_t<tManagerType>;
-    static_assert(std::is_base_of_v<ObjectManager, NonConstManager>);
+    static_assert(std::is_base_of_v<IObjectManager, NonConstManager>);
     return groupToManagerMap.erase(std::type_index(typeid(NonConstManager))) == 1;
 }
 
@@ -81,7 +81,7 @@ template<typename tManagerType>
 std::weak_ptr<tManagerType> Entity::GetManager() const
 {
     using tNonConstManager = std::remove_const_t<tManagerType>;
-    static_assert(std::is_base_of_v<ObjectManager, tNonConstManager>);
+    static_assert(std::is_base_of_v<IObjectManager, tNonConstManager>);
     const auto itr = groupToManagerMap.find(std::type_index(typeid(tNonConstManager)));
     return itr != groupToManagerMap.end() ? std::static_pointer_cast<const tNonConstManager>(itr->second)
                                           : std::weak_ptr<const tNonConstManager>();

@@ -3,8 +3,6 @@
 #pragma once
 
 #include <memory>
-#include <string>
-#include <utility>
 
 namespace ECSCore
 {
@@ -19,11 +17,9 @@ class Object
     Object(Object&&)                 = delete;
     Object& operator=(Object&&)      = delete;
 
-    explicit Object(const std::weak_ptr<Entity>& inOwner) : owner(inOwner)
-    {
-    }
+    explicit Object(const std::weak_ptr<Entity>& inOwner);
 
-    virtual ~Object() = default;
+    virtual ~Object();
 
     [[nodiscard]] std::weak_ptr<Entity> GetOwner()
     {
@@ -36,6 +32,9 @@ class Object
     }
 
   private:
+    void AttachToEntity(const std::weak_ptr<Entity>& inOwner);
+    void DetachFromEntity();
+
     const std::weak_ptr<Entity> owner;
 };
 

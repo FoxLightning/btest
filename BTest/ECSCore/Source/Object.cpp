@@ -6,7 +6,26 @@
 #include <string>
 #include <utility>
 
+#include "ECSCore/Entity.hpp"
+
 namespace ECSCore
 {
+
+Object::Object(const std::weak_ptr<Entity>& inOwner)
+{
+
+}
+
+Object::~Object()
+{
+}
+
+void Object::AttachToEntity(const std::weak_ptr<Entity>& inOwner)
+{
+}
+
+void Object::DetachFromEntity()
+{
+}
 
 } // namespace ECSCore
