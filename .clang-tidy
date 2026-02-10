@@ -46,6 +46,12 @@ CheckOptions:
 - key:             readability-identifier-naming.TemplatePrefix
   value:           "T"
 
+- key:             readability-identifier-naming.TemplateParameterPrefix
+  value:           "t"
+
+- key:             readability-identifier-naming.TemplateSpecializationPrefix
+  value:           "t"
+
 - key:             readability-identifier-naming.BooleanPrefix
   value:           "b"
 - key:             readability-identifier-naming.GlobalVariablePrefix
