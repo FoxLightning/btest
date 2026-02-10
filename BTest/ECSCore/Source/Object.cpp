@@ -9,8 +9,4 @@
 namespace ECSCore
 {
 
-Object::Object(std::string inName, const std::weak_ptr<Entity>& inOwner) : name(std::move(inName)), owner(inOwner)
-{
-}
-
 } // namespace ECSCore

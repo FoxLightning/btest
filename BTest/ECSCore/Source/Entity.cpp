@@ -6,12 +6,5 @@
 
 namespace ECSCore
 {
-Entity::Entity(std::string inName) : name(std::move(inName))
-{
-}
 
-std::string Entity::GetName() const
-{
-    return name;
-}
 } // namespace ECSCore

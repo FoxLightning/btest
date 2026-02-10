@@ -2,43 +2,44 @@
 
 #include "ECSCore/ObjectManager.hpp"
 
-#include <cassert>
+#include <algorithm>
+#include <cstdint>
 #include <functional>
 #include <memory>
-#include <ranges>
-#include <string>
+#include <utility>
 
 #include "ECSCore/Object.hpp"
 
 namespace ECSCore
 {
 
-bool ObjectManager::DeleteObject(const std::string& inName)
+int32_t ObjectManager::EraseObjectsIf(const std::function<bool(std::shared_ptr<Object>)>& predicate)
 {
-    return objectPool.erase(inName) == 1;
+    return static_cast<int32_t>(std::erase_if(objectPool, predicate));
 }
 
-std::weak_ptr<Object> ObjectManager::GetObject(const std::string& inName)
+std::weak_ptr<Object> ObjectManager::GetObject(const std::function<bool(std::shared_ptr<Object>)>& predicate)
 {
-    return std::const_pointer_cast<Object>(static_cast<const ObjectManager*>(this)->GetObject(inName).lock());
-}
+    const std::weak_ptr constWeak = std::as_const(*this).GetObject(predicate);
 
-std::weak_ptr<const Object> ObjectManager::GetObject(const std::string& inName) const
-{
-    if (const auto itr = objectPool.find(inName); itr != objectPool.end())
+    if (const std::shared_ptr sharedWeak = constWeak.lock())
     {
-        return itr->second;
+        return std::weak_ptr{std::const_pointer_cast<Object>(sharedWeak)};
     }
+
     return {};
 }
 
-void ObjectManager::ForEachObject(const std::function<void(std::weak_ptr<Object>)>& function) const
+std::weak_ptr<const Object> ObjectManager::GetObject(
+    const std::function<bool(std::shared_ptr<Object>)>& predicate) const
 {
-    for (const auto& objectPtr : objectPool | std::views::values)
-    {
-        assert(objectPtr);
-        function(objectPtr);
-    }
+    const auto iterator = std::ranges::find_if(objectPool, predicate);
+    return iterator != objectPool.end() ? std::weak_ptr<const Object>{*iterator} : std::weak_ptr<const Object>{};
+}
+
+void ObjectManager::ForEachObject(const std::function<void(std::shared_ptr<Object>)>& function) const
+{
+    std::ranges::for_each(objectPool, function);
 }
 
 } // namespace ECSCore

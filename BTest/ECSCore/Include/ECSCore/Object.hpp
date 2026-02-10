@@ -12,21 +12,19 @@ class Entity;
 
 class Object
 {
-public:
+  public:
     Object()                         = delete;
     Object(const Object&)            = delete;
     Object& operator=(const Object&) = delete;
     Object(Object&&)                 = delete;
     Object& operator=(Object&&)      = delete;
 
-    explicit Object(std::string  inName, const std::weak_ptr<Entity>& inOwner);
+    explicit Object(const std::weak_ptr<Entity>& inOwner) : owner(inOwner)
+    {
+    }
+
     virtual ~Object() = default;
 
-
-    [[nodiscard]] std::string GetName() const
-    {
-        return name;
-    }
     [[nodiscard]] std::weak_ptr<Entity> GetOwner()
     {
         return owner;
@@ -38,7 +36,6 @@ public:
     }
 
   private:
-    const std::string           name;
     const std::weak_ptr<Entity> owner;
 };
 

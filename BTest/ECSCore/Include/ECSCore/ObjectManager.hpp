@@ -3,12 +3,11 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 #include <functional>
 #include <memory>
-#include <string>
 #include <type_traits>
-#include <unordered_map>
-#include <utility>
+#include <vector>
 
 #include "Object.hpp"
 
@@ -19,25 +18,24 @@ class Entity;
 class ObjectManager
 {
   public:
-    ObjectManager()                                = delete;
     ObjectManager(const ObjectManager&)            = delete;
     ObjectManager(ObjectManager&&)                 = delete;
     ObjectManager& operator=(const ObjectManager&) = delete;
     ObjectManager& operator=(ObjectManager&&)      = delete;
 
-    explicit ObjectManager(std::shared_ptr<Entity> inOwner) : owner(std::move(inOwner))
-    {
-    }
+    ObjectManager()          = default;
     virtual ~ObjectManager() = default;
 
-    template<typename ObjectType>
-    std::weak_ptr<ObjectType> CreateObject(const std::string& inName);
-    bool                      DeleteObject(const std::string& inName);
+    template<class tObjectType, class... tArgs>
+    std::weak_ptr<tObjectType> CreateObject(tArgs... args);
 
-    [[nodiscard]] std::weak_ptr<Object>       GetObject(const std::string& inName);
-    [[nodiscard]] std::weak_ptr<const Object> GetObject(const std::string& inName) const;
+    int32_t EraseObjectsIf(const std::function<bool(std::shared_ptr<Object>)>& predicate);
 
-    void ForEachObject(const std::function<void(std::weak_ptr<Object>)>& function) const;
+    [[nodiscard]] std::weak_ptr<Object>       GetObject(const std::function<bool(std::shared_ptr<Object>)>& predicate);
+    [[nodiscard]] std::weak_ptr<const Object> GetObject(
+        const std::function<bool(std::shared_ptr<Object>)>& predicate) const;
+
+    void ForEachObject(const std::function<void(std::shared_ptr<Object>)>& function) const;
 
     [[nodiscard]] size_t GetObjectCount() const
     {
@@ -45,23 +43,18 @@ class ObjectManager
     }
 
   private:
-    const std::shared_ptr<Entity>                            owner;
-    std::unordered_map<std::string, std::shared_ptr<Object>> objectPool;
+    std::vector<std::shared_ptr<Object>> objectPool;
 };
 
-template<typename ObjectType>
-std::weak_ptr<ObjectType> ObjectManager::CreateObject(const std::string& inName)
+template<typename tObjectType, typename... tArgs>
+std::weak_ptr<tObjectType> ObjectManager::CreateObject(tArgs... args)
 {
-    using CleanObjectType = std::remove_cvref_t<ObjectType>;
-    static_assert(std::is_base_of_v<Object, CleanObjectType>);
+    using tCleanObjectType = std::remove_cvref_t<tObjectType>;
+    static_assert(std::is_base_of_v<Object, tCleanObjectType>);
 
-    auto [pair, isInserted] = objectPool.emplace(inName, nullptr);
-
-    if (isInserted)
-    {
-        pair->second = std::make_shared<CleanObjectType>(inName, owner);
-    }
-    return pair->second;
+    auto object = std::make_shared<tCleanObjectType>(args...);
+    objectPool.emplace_back(object);
+    return std::weak_ptr<tObjectType>(object);
 }
 
 } // namespace ECSCore

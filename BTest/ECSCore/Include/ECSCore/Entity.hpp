@@ -1,6 +1,8 @@
 ﻿// Proprietary & Confidential — All Rights Reserved — Copyright (c) 2026 Bohdan Lysychenko — See LICENSE.
 
 #pragma once
+
+#include <cstddef>
 #include <memory>
 #include <string>
 #include <type_traits>
@@ -16,28 +18,25 @@ class ObjectManager;
 class Entity : public std::enable_shared_from_this<Entity>
 {
   public:
-    Entity()                         = delete;
     Entity(const Entity&)            = delete;
     Entity(Entity&&)                 = delete;
     Entity& operator=(const Entity&) = delete;
     Entity& operator=(Entity&&)      = delete;
 
-    explicit Entity(std::string inName);
+    explicit Entity() = default;
     virtual ~Entity() = default;
 
-    [[nodiscard]] std::string GetName() const;
+    template<class tManagerType, class... tArgs>
+    std::weak_ptr<tManagerType> CreateManager(tArgs... args);
 
-    template<typename ManagerType>
-    std::weak_ptr<ManagerType> CreateManager();
-
-    template<typename ManagerType>
+    template<typename tManagerType>
     bool DeleteManager();
 
-    template<typename ManagerType>
-    [[nodiscard]] std::weak_ptr<ManagerType> GetManager();
+    template<typename tManagerType>
+    [[nodiscard]] std::weak_ptr<tManagerType> GetManager();
 
-    template<typename ManagerType>
-    [[nodiscard]] std::weak_ptr<ManagerType> GetManager() const;
+    template<typename tManagerType>
+    [[nodiscard]] std::weak_ptr<tManagerType> GetManager() const;
 
     [[nodiscard]] size_t GetManagersNum() const
     {
@@ -46,17 +45,15 @@ class Entity : public std::enable_shared_from_this<Entity>
 
   private:
     std::unordered_map<std::type_index, std::shared_ptr<ObjectManager>> groupToManagerMap;
-
-    const std::string name;
 };
 
-template<typename ManagerType>
-std::weak_ptr<ManagerType> Entity::CreateManager()
+template<typename tManagerType, typename... tArgs>
+std::weak_ptr<tManagerType> Entity::CreateManager(tArgs... args)
 {
-    using NonConstManager = std::remove_const_t<ManagerType>;
+    using NonConstManager = std::remove_const_t<tManagerType>;
     static_assert(std::is_base_of_v<ObjectManager, NonConstManager>);
-    auto [objectManager, bSuccess] = groupToManagerMap.emplace(std::type_index(typeid(NonConstManager)),
-                                                               std::make_shared<NonConstManager>(shared_from_this()));
+    auto [objectManager, bSuccess] = groupToManagerMap.emplace(
+        std::type_index(typeid(NonConstManager)), std::make_shared<NonConstManager>(args...));
     if (bSuccess)
     {
         return std::static_pointer_cast<NonConstManager>(objectManager->second);
@@ -64,30 +61,30 @@ std::weak_ptr<ManagerType> Entity::CreateManager()
     return {};
 }
 
-template<typename ManagerType>
+template<typename tManagerType>
 bool Entity::DeleteManager()
 {
-    using NonConstManager = std::remove_const_t<ManagerType>;
+    using NonConstManager = std::remove_const_t<tManagerType>;
     static_assert(std::is_base_of_v<ObjectManager, NonConstManager>);
     return groupToManagerMap.erase(std::type_index(typeid(NonConstManager))) == 1;
 }
 
-template<typename ManagerType>
-std::weak_ptr<ManagerType> Entity::GetManager()
+template<typename tManagerType>
+std::weak_ptr<tManagerType> Entity::GetManager()
 {
-    using NonConstManager = std::remove_const_t<ManagerType>;
+    using NonConstManager = std::remove_const_t<tManagerType>;
     const auto* constThis = static_cast<const Entity*>(this);
     return std::const_pointer_cast<NonConstManager>(constThis->GetManager<NonConstManager>().lock());
 }
 
-template<typename ManagerType>
-std::weak_ptr<ManagerType> Entity::GetManager() const
+template<typename tManagerType>
+std::weak_ptr<tManagerType> Entity::GetManager() const
 {
-    using NonConstManager = std::remove_const_t<ManagerType>;
-    static_assert(std::is_base_of_v<ObjectManager, NonConstManager>);
-    const auto itr = groupToManagerMap.find(std::type_index(typeid(NonConstManager)));
-    return itr != groupToManagerMap.end() ? std::static_pointer_cast<const NonConstManager>(itr->second)
-                                          : std::weak_ptr<const NonConstManager>();
+    using tNonConstManager = std::remove_const_t<tManagerType>;
+    static_assert(std::is_base_of_v<ObjectManager, tNonConstManager>);
+    const auto itr = groupToManagerMap.find(std::type_index(typeid(tNonConstManager)));
+    return itr != groupToManagerMap.end() ? std::static_pointer_cast<const tNonConstManager>(itr->second)
+                                          : std::weak_ptr<const tNonConstManager>();
 }
 
 } // namespace ECSCore
