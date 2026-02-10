@@ -3,29 +3,28 @@
 #include "ECSCore/Object.hpp"
 
 #include <memory>
-#include <string>
-#include <utility>
 
 #include "ECSCore/Entity.hpp"
 
 namespace ECSCore
 {
 
-Object::Object(const std::weak_ptr<Entity>& inOwner)
-{
-
-}
-
 Object::~Object()
 {
+    DetachObjectToEntity();
 }
 
-void Object::AttachToEntity(const std::weak_ptr<Entity>& inOwner)
+void Object::AttachObjectToEntity(const std::weak_ptr<Object>& object)
 {
+    owner.lock()->AttachObjectToEntity(object);
 }
 
-void Object::DetachFromEntity()
+void Object::DetachObjectToEntity()
 {
+    if (const auto sharedOwner = owner.lock())
+    {
+        sharedOwner->DetachObjectFromEntity();
+    }
 }
 
 } // namespace ECSCore

@@ -8,7 +8,7 @@ namespace ECSCore
 {
 class Entity;
 
-class Object
+class Object : public std::enable_shared_from_this<Object>
 {
   public:
     Object()                         = delete;
@@ -17,7 +17,13 @@ class Object
     Object(Object&&)                 = delete;
     Object& operator=(Object&&)      = delete;
 
-    explicit Object(const std::weak_ptr<Entity>& inOwner);
+    template<typename tObject, typename... tArgs>
+    static std::shared_ptr<Object> CreateObject(const std::weak_ptr<Entity>& inOwner, tArgs&&... args)
+    {
+        auto createdObject = std::shared_ptr<tObject>(new tObject(inOwner, std::forward<tArgs>(args)...));
+        createdObject->AttachObjectToEntity(createdObject);
+        return createdObject;
+    }
 
     virtual ~Object();
 
@@ -31,9 +37,14 @@ class Object
         return owner;
     }
 
+  protected:
+    explicit Object(const std::weak_ptr<Entity>& inOwner) : owner(inOwner)
+    {
+    }
+
   private:
-    void AttachToEntity(const std::weak_ptr<Entity>& inOwner);
-    void DetachFromEntity();
+    void AttachObjectToEntity(const std::weak_ptr<Object>& object);
+    void DetachObjectToEntity();
 
     const std::weak_ptr<Entity> owner;
 };

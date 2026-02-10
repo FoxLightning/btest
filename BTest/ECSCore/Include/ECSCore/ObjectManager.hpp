@@ -20,7 +20,9 @@ class Object;
 class IObjectManager
 {
   public:
-    virtual ~IObjectManager()                    = default;
+    virtual ~IObjectManager()                                             = default;
+    virtual bool TryAttachObjectToComponent(std::weak_ptr<Object> object) = 0;
+    virtual void EraseExpiredWeakPointers()                               = 0;
 };
 
 template<typename tObjectType>
@@ -35,47 +37,45 @@ class TObjectManager : public IObjectManager
     TObjectManager()           = default;
     ~TObjectManager() override = default;
 
-    template<class... tArgs>
-    std::weak_ptr<tObjectType> CreateObject(tArgs... args);
+    bool TryAttachObjectToComponent(std::weak_ptr<Object> object) override;
+    void EraseExpiredWeakPointers() override;
 
-    int32_t EraseObjectsIf(const std::function<bool(std::shared_ptr<Object>)>& predicate);
-
-    [[nodiscard]] std::weak_ptr<Object>       GetObject(const std::function<bool(std::shared_ptr<Object>)>& predicate);
+    [[nodiscard]] std::weak_ptr<Object>       GetObject(const std::function<bool(std::weak_ptr<Object>)>& predicate);
     [[nodiscard]] std::weak_ptr<const Object> GetObject(
-        const std::function<bool(std::shared_ptr<Object>)>& predicate) const;
+        const std::function<bool(std::weak_ptr<Object>)>& predicate) const;
 
-    void ForEachObject(const std::function<void(std::shared_ptr<Object>)>& function) const;
+    void ForEachObject(const std::function<void(std::weak_ptr<Object>)>& function) const;
 
     [[nodiscard]] size_t GetObjectCount() const
     {
-        return objectPool.size();
+        return objectRegistry.size();
     }
 
   private:
-    std::vector<std::shared_ptr<Object>> objectPool;
+    std::vector<std::weak_ptr<Object>> objectRegistry;
 };
 
 template<typename tObjectType>
-template<class... tArgs>
-std::weak_ptr<tObjectType> TObjectManager<tObjectType>::CreateObject(tArgs... args)
+bool TObjectManager<tObjectType>::TryAttachObjectToComponent(std::weak_ptr<Object> object)
 {
-    using tCleanObjectType = std::remove_cvref_t<tObjectType>;
-    static_assert(std::is_base_of_v<Object, tCleanObjectType>);
-
-    auto object = std::make_shared<tCleanObjectType>(args...);
-    objectPool.emplace_back(object);
-    return std::weak_ptr<tObjectType>(object);
+    if (std::dynamic_pointer_cast<tObjectType>(object.lock()))
+    {
+        objectRegistry.emplace_back(object);
+        return true;
+    }
+    return false;
 }
 
 template<typename tObjectType>
-int32_t TObjectManager<tObjectType>::EraseObjectsIf(const std::function<bool(std::shared_ptr<Object>)>& predicate)
+void TObjectManager<tObjectType>::EraseExpiredWeakPointers()
 {
-    return static_cast<int32_t>(std::erase_if(objectPool, predicate));
+    std::erase_if(objectRegistry,
+                           [](const std::weak_ptr<Object>& weakObject) { return weakObject.expired(); });
 }
 
 template<typename tObjectType>
 std::weak_ptr<Object> TObjectManager<tObjectType>::GetObject(
-    const std::function<bool(std::shared_ptr<Object>)>& predicate)
+    const std::function<bool(std::weak_ptr<Object>)>& predicate)
 {
     const std::weak_ptr constWeak = std::as_const(*this).GetObject(predicate);
 
@@ -89,16 +89,16 @@ std::weak_ptr<Object> TObjectManager<tObjectType>::GetObject(
 
 template<typename tObjectType>
 std::weak_ptr<const Object> TObjectManager<tObjectType>::GetObject(
-    const std::function<bool(std::shared_ptr<Object>)>& predicate) const
+    const std::function<bool(std::weak_ptr<Object>)>& predicate) const
 {
-    const auto iterator = std::ranges::find_if(objectPool, predicate);
-    return iterator != objectPool.end() ? std::weak_ptr<const Object>{*iterator} : std::weak_ptr<const Object>{};
+    const auto iterator = std::ranges::find_if(objectRegistry, predicate);
+    return iterator != objectRegistry.end() ? std::weak_ptr<const Object>{*iterator} : std::weak_ptr<const Object>{};
 }
 
 template<typename tObjectType>
-void TObjectManager<tObjectType>::ForEachObject(const std::function<void(std::shared_ptr<Object>)>& function) const
+void TObjectManager<tObjectType>::ForEachObject(const std::function<void(std::weak_ptr<Object>)>& function) const
 {
-    std::ranges::for_each(objectPool, function);
+    std::ranges::for_each(objectRegistry, function);
 }
 
 } // namespace ECSCore

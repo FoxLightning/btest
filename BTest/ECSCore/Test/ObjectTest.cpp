@@ -11,12 +11,22 @@
 int main()
 {
     auto entity = std::make_shared<ECSCore::Entity>();
-    auto manager = entity->CreateManager<ECSCore::TObjectManager<ECSCore::Object>>();
-    if (auto sharedManager = manager.lock())
+    auto managerPtr = entity->CreateManager<ECSCore::TObjectManager<ECSCore::Object>>();
     {
-        sharedManager->CreateObject(entity);
-        std::cout << sharedManager->GetObjectCount() << std::endl;
+
+        auto obj1 = ECSCore::Object::CreateObject<ECSCore::Object>(entity);
+        auto obj2 = ECSCore::Object::CreateObject<ECSCore::Object>(entity);
+        auto obj3 = ECSCore::Object::CreateObject<ECSCore::Object>(entity);
+        auto obj4 = ECSCore::Object::CreateObject<ECSCore::Object>(entity);
+        if (managerPtr.lock()->GetObjectCount() != 4)
+        {
+            return 1;
+        }
     }
-    std::cout << entity->GetManagersNum() << std::endl;
+    if (managerPtr.lock()->GetObjectCount() != 0)
+    {
+        return 1;
+    }
+
     return 0;
 }

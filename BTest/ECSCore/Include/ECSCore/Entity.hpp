@@ -11,8 +11,9 @@
 namespace ECSCore
 {
 class IObjectManager;
+class Object;
 
-class Entity : public std::enable_shared_from_this<Entity>
+class Entity
 {
   public:
     Entity(const Entity&)            = delete;
@@ -22,6 +23,9 @@ class Entity : public std::enable_shared_from_this<Entity>
 
     explicit Entity() = default;
     virtual ~Entity() = default;
+
+    void AttachObjectToEntity(const std::weak_ptr<Object>& object);
+    void DetachObjectFromEntity();
 
     template<class tManagerType, class... tArgs>
     std::weak_ptr<tManagerType> CreateManager(tArgs... args);
