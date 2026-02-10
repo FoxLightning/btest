@@ -72,8 +72,8 @@ classDiagram
     }
 
 %% relationships
-    Entity "1" *-- "0..*" ObjectManagerComponent
-    ObjectManagerComponent "1" *-- "0..*" Object
+    ObjectManagerComponent "1" *-- "0..*" Entity
+    Object "1" o-- "0..*" ObjectManagerComponent
 ```
 
 ## ECS Core class responsibilities
@@ -82,14 +82,14 @@ classDiagram
 
 - Store managers (Single manager per type)
 
-### ObjectManagerComponent
+### ObjectManager
 
-- Object lifecycle management
-- Store objects
+- Store raw references to objects
+- Provide iteration over objects corresponding type
 
 ### Object
 
-- Provide object registration mechanism
+- Provide an object registration mechanism and guarantee that valid reference in the object manager
 
 ## ECS App Class Diagram
 
