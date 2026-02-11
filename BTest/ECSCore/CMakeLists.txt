@@ -11,4 +11,4 @@ target_include_directories(ECSCore
         ${CMAKE_CURRENT_SOURCE_DIR}/Include
 )
 
-add_custom_test(ObjectTest ECSCore ECSCore)
+add_custom_test(ObjectCreateDeleteTest ECSCore ECSCore)
