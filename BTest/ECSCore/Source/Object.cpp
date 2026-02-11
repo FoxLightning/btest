@@ -2,6 +2,7 @@
 
 #include "ECSCore/Object.hpp"
 
+#include <cassert>
 #include <memory>
 
 #include "ECSCore/Entity.hpp"
@@ -16,6 +17,10 @@ Object::~Object()
 
 void Object::AttachObjectToEntity(const std::weak_ptr<Object>& object)
 {
+    if (owner.expired())
+    {
+        assert(false);
+    }
     owner.lock()->AttachObjectToEntity(object);
 }
 
