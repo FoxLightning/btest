@@ -12,3 +12,4 @@ target_include_directories(ECSCore
 )
 
 add_custom_test(ObjectCreateDeleteTest ECSCore ECSCore)
+add_custom_test(ManagerCreateDeleteTest ECSCore ECSCore)
