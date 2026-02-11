@@ -28,7 +28,7 @@ class Entity
     void DetachObjectFromEntity();
 
     template<class tManagerType, class... tArgs>
-    std::weak_ptr<tManagerType> CreateManager(tArgs... args);
+    std::weak_ptr<tManagerType> CreateManager(tArgs&&... args);
 
     template<typename tManagerType>
     bool DeleteManager();
@@ -49,15 +49,15 @@ class Entity
 };
 
 template<typename tManagerType, typename... tArgs>
-std::weak_ptr<tManagerType> Entity::CreateManager(tArgs... args)
+std::weak_ptr<tManagerType> Entity::CreateManager(tArgs&&... args)
 {
-    using tCleanManagerType = std::remove_const_t<tManagerType>;
+    using tCleanManagerType = std::remove_cvref_t<tManagerType>;
     static_assert(std::is_base_of_v<IObjectManager, tCleanManagerType>);
     auto [objectManager, bSuccess] = groupToManagerMap.emplace(
-        std::type_index(typeid(tCleanManagerType)), std::make_shared<tCleanManagerType>(args...));
+        std::type_index(typeid(tCleanManagerType)), std::make_shared<tCleanManagerType>(std::forward<tArgs>(args)...));
     if (bSuccess)
     {
-        return std::static_pointer_cast<tCleanManagerType>(objectManager->second);
+        return std::static_pointer_cast<tManagerType>(objectManager->second);
     }
     return {};
 }
@@ -65,7 +65,7 @@ std::weak_ptr<tManagerType> Entity::CreateManager(tArgs... args)
 template<typename tManagerType>
 bool Entity::DeleteManager()
 {
-    using tCleanManagerType = std::remove_const_t<tManagerType>;
+    using tCleanManagerType = std::remove_cvref_t<tManagerType>;
     static_assert(std::is_base_of_v<IObjectManager, tCleanManagerType>);
 
     static_assert(std::is_base_of_v<IObjectManager, tCleanManagerType>);
@@ -75,11 +75,11 @@ bool Entity::DeleteManager()
 template<typename tManagerType>
 std::weak_ptr<tManagerType> Entity::GetManager()
 {
-    using tCleanManagerType = std::remove_const_t<tManagerType>;
+    using tCleanManagerType = std::remove_cvref_t<tManagerType>;
     static_assert(std::is_base_of_v<IObjectManager, tCleanManagerType>);
 
     const auto* constThis = static_cast<const Entity*>(this);
-    return std::const_pointer_cast<tCleanManagerType>(constThis->GetManager<tCleanManagerType>().lock());
+    return std::const_pointer_cast<tManagerType>(constThis->GetManager<tCleanManagerType>().lock());
 }
 
 template<typename tManagerType>
