@@ -37,7 +37,7 @@ class Entity
     [[nodiscard]] std::weak_ptr<tManagerType> GetManager();
 
     template<typename tManagerType>
-    [[nodiscard]] std::weak_ptr<tManagerType> GetManager() const;
+    [[nodiscard]] std::weak_ptr<const tManagerType> GetManager() const;
 
     [[nodiscard]] size_t GetManagersNum() const
     {
@@ -66,6 +66,7 @@ template<typename tManagerType>
 bool Entity::DeleteManager()
 {
     using tCleanManagerType = std::remove_const_t<tManagerType>;
+    static_assert(std::is_base_of_v<IObjectManager, tCleanManagerType>);
 
     static_assert(std::is_base_of_v<IObjectManager, tCleanManagerType>);
     return groupToManagerMap.erase(std::type_index(typeid(tCleanManagerType))) == 1;
@@ -75,13 +76,14 @@ template<typename tManagerType>
 std::weak_ptr<tManagerType> Entity::GetManager()
 {
     using tCleanManagerType = std::remove_const_t<tManagerType>;
+    static_assert(std::is_base_of_v<IObjectManager, tCleanManagerType>);
 
     const auto* constThis = static_cast<const Entity*>(this);
     return std::const_pointer_cast<tCleanManagerType>(constThis->GetManager<tCleanManagerType>().lock());
 }
 
 template<typename tManagerType>
-std::weak_ptr<tManagerType> Entity::GetManager() const
+std::weak_ptr<const tManagerType> Entity::GetManager() const
 {
     using tCleanManagerType = std::remove_cvref_t<tManagerType>;
     static_assert(std::is_base_of_v<IObjectManager, tCleanManagerType>);
