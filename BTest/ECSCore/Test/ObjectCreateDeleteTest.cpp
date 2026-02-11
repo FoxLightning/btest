@@ -2,11 +2,12 @@
 
 #include <array>
 #include <chrono>
+#include <cstdint>
 #include <iostream>
 #include <memory>
 #include <ostream>
-#include <ratio>
 #include <print>
+#include <ratio>
 
 #include "ECSCore/Entity.hpp"
 #include "ECSCore/Object.hpp"
@@ -47,6 +48,7 @@ int main()
     const auto endDeleteTime  = std::chrono::steady_clock::now();
     auto       createDuration = std::chrono::duration<double, std::milli>(endCreationTime - startTime).count();
     auto       deleteDuration = std::chrono::duration<double, std::milli>(endDeleteTime - endCreationTime).count();
-    println(std::cout, "Test successfully finished.\nCreate time {:.6} ms.\nDelete time {:.6} ms", createDuration, deleteDuration);
+    println(std::cout, "Test successfully finished.\nCreate time {:.6} ms.\nDelete time {:.6} ms", createDuration,
+            deleteDuration);
     return 0;
 }

@@ -20,7 +20,7 @@ class Object;
 class IObjectManager
 {
   public:
-    virtual ~IObjectManager()                                             = default;
+    virtual ~IObjectManager() = default;
     // TODO do something with return bool or remove it
     virtual bool TryAttachObjectToComponent(std::weak_ptr<Object> object) = 0;
     virtual void EraseExpiredWeakPointers()                               = 0;
@@ -71,8 +71,7 @@ bool TObjectManager<tObjectType>::TryAttachObjectToComponent(std::weak_ptr<Objec
 template<typename tObjectType>
 void TObjectManager<tObjectType>::EraseExpiredWeakPointers()
 {
-    std::erase_if(objectRegistry,
-                           [](const std::weak_ptr<Object>& weakObject) { return weakObject.expired(); });
+    std::erase_if(objectRegistry, [](const std::weak_ptr<Object>& weakObject) { return weakObject.expired(); });
 }
 
 template<typename tObjectType>

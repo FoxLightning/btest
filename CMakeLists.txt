@@ -16,9 +16,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Clang-Tidy integration
 find_program(CLANG_TIDY_EXE NAMES clang-tidy)
-if(CLANG_TIDY_EXE)
-  set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
-endif()
+if (CLANG_TIDY_EXE)
+    set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
+endif ()
 
 # Add subdirectories for different components
 add_subdirectory(BTest)

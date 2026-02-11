@@ -2,7 +2,7 @@
 
 int main()
 {
-    const std::shared_ptr AppInstance{ ecsapp::GetAppInstance() };
+    const std::shared_ptr AppInstance{ecsapp::GetAppInstance()};
     AppInstance->AddEntity("Test");
     AppInstance->RemoveEntity("Test");
     AppInstance->AddComponent("Test", "Test", "Test");
@@ -10,4 +10,3 @@ int main()
 
     return 0;
 }
-

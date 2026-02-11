@@ -18,5 +18,5 @@ class TestObjectWithoutManager : public ECSCore::Object
 int main()
 {
     const auto entity = std::make_shared<ECSCore::Entity>();
-    auto obj1 = ECSCore::Object::CreateObject<TestObjectWithoutManager>(entity);
+    auto       obj1   = ECSCore::Object::CreateObject<TestObjectWithoutManager>(entity);
 }
