@@ -39,6 +39,7 @@ class TObjectManager : public IObjectManager
     ~TObjectManager() override = default;
 
     bool TryAttachObjectToComponent(std::weak_ptr<Object> object) override;
+    // TODO fix performance
     void EraseExpiredWeakPointers() override;
 
     [[nodiscard]] std::weak_ptr<Object>       GetObject(const std::function<bool(std::weak_ptr<Object>)>& predicate);
