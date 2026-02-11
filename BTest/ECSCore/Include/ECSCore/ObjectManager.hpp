@@ -21,6 +21,7 @@ class IObjectManager
 {
   public:
     virtual ~IObjectManager()                                             = default;
+    // TODO do something with return bool or remove it
     virtual bool TryAttachObjectToComponent(std::weak_ptr<Object> object) = 0;
     virtual void EraseExpiredWeakPointers()                               = 0;
 };

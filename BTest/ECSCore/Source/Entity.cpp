@@ -14,10 +14,7 @@ void Entity::AttachObjectToEntity(const std::weak_ptr<Object>& object)
 {
     for (const auto& manager : groupToManagerMap | std::ranges::views::values)
     {
-        if (manager->TryAttachObjectToComponent(object))
-        {
-            return;
-        }
+        manager->TryAttachObjectToComponent(object);
     }
 }
 
