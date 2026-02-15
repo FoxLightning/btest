@@ -158,6 +158,19 @@ bool AppInstance::GetVisibleActions(const EntityName& entityName, std::vector<st
     return true;
 }
 
+bool AppInstance::GetManagerTypes(std::vector<std::string>& out)
+{
+    out.push_back(ActionManager::GetManagerTypeName());
+    return true;
+}
+
+bool AppInstance::GetActionTypes(std::vector<std::string>& out)
+{
+    out.push_back(MoveAction::GetTypeName());
+    out.push_back(ToggleAction::GetTypeName());
+    return true;
+}
+
 size_t AppInstance::GetEntityCount()
 {
     return entityMap.size();

@@ -36,6 +36,9 @@ class AppInstance : public IECSAppAPI
 
     bool GetVisibleActions(const EntityName& entityName, std::vector<std::string>& out) override;
 
+    bool GetManagerTypes(std::vector<std::string>& out) override;
+    bool GetActionTypes(std::vector<std::string>& out) override;
+
     size_t GetEntityCount() override;
 
   private:

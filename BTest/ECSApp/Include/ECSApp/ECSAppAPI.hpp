@@ -46,6 +46,9 @@ class IECSAppAPI
 
     virtual bool GetVisibleActions(const EntityName& entityName, std::vector<std::string>& out) = 0;
 
+    virtual bool GetActionTypes(std::vector<std::string>& out) = 0;
+    virtual bool GetManagerTypes(std::vector<std::string>& out) = 0;
+
     virtual size_t GetEntityCount() = 0;
 };
 

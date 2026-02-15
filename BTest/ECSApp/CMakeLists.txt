@@ -1,3 +1,5 @@
+# Proprietary & Confidential — All Rights Reserved — Copyright (c) 2026 Bohdan Lysychenko — See LICENSE.
+
 add_library(ECSApp STATIC
         Source/AppInstance.cpp
         Source/ActionManager.cpp

@@ -1,12 +1,17 @@
-﻿#include "ECSApp/ECSAppAPI.hpp"
+﻿// Proprietary & Confidential — All Rights Reserved — Copyright (c) 2026 Bohdan Lysychenko — See LICENSE.
+
+#include "CliAppState.hpp"
+#include "ECSApp/ECSAppAPI.hpp"
 
 int main()
 {
-    const std::shared_ptr AppInstance{ECSApp::GetAppInstance()};
-    AppInstance->AddEntity("Test");
-    AppInstance->RemoveEntity("Test");
-    AppInstance->AddManagerToEntity("Test", "Test");
-    AppInstance->RemoveManagerFromEntity("Test", "Test");
+    CLIApp::CLIApp cliApp(ECSApp::GetAppInstance());
+    while (!cliApp.ShouldExit())
+    {
+        cliApp.FetchInput();
+        cliApp.CallCommand();
+        cliApp.ResetState();
+    }
 
     return 0;
 }
