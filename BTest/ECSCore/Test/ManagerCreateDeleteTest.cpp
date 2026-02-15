@@ -34,42 +34,53 @@ class TestObjectThree : public ECSCore::Object
     }
 };
 
+class ObjectHolderManager : public ECSCore::TObjectManager<ECSCore::Object>
+{
+  public:
+    bool PostAttachObjectToComponent(std::weak_ptr<ECSCore::Object> object) override
+    {
+        objects.push_back(object.lock());
+        return true;
+    }
+
+  private:
+    std::vector<std::shared_ptr<ECSCore::Object>> objects;
+};
+
 int main()
 {
     const auto entity      = std::make_shared<ECSCore::Entity>();
     const auto entityConst = std::static_pointer_cast<const ECSCore::Entity>(entity);
     const auto constEntity = std::static_pointer_cast<const ECSCore::Entity>(entity);
 
-    constexpr int32_t                                                      expectedEntitiesNumOne   = 1;
-    constexpr int32_t                                                      expectedEntitiesNumTwo   = 2;
-    constexpr int32_t                                                      expectedEntitiesNumThree = 3;
-    std::array<std::shared_ptr<ECSCore::Object>, expectedEntitiesNumOne>   entityArrayOne;
-    std::array<std::shared_ptr<ECSCore::Object>, expectedEntitiesNumTwo>   entityArrayTwo;
-    std::array<std::shared_ptr<ECSCore::Object>, expectedEntitiesNumThree> entityArrayThree;
+    constexpr int32_t expectedEntitiesNumOne   = 1;
+    constexpr int32_t expectedEntitiesNumTwo   = 2;
+    constexpr int32_t expectedEntitiesNumThree = 3;
     std::println(std::cout, "Creating managers.");
     {
-        const auto managerOne   = entity->CreateManager<ECSCore::TObjectManager<TestObjectOne>>();
-        const auto managerTwo   = entity->CreateManager<ECSCore::TObjectManager<TestObjectTwo>>();
-        const auto managerThree = entity->CreateManager<ECSCore::TObjectManager<TestObjectThree>>();
+        const auto managerOne         = entity->CreateManager<ECSCore::TObjectManager<TestObjectOne>>();
+        const auto managerTwo         = entity->CreateManager<ECSCore::TObjectManager<TestObjectTwo>>();
+        const auto managerThree       = entity->CreateManager<ECSCore::TObjectManager<TestObjectThree>>();
+        const auto managerHolderOne   = entity->CreateManager<ObjectHolderManager>();
     }
-    if (entity->GetManagersNum() != 3)
+    if (entity->GetManagersNum() != 4)
     {
-        std::println(std::cerr, "Managers num is {}, should be {}.", entity->GetManagersNum(), 3);
+        std::println(std::cerr, "Managers num is {}, should be {}.", entity->GetManagersNum(), 4);
         return 1;
     }
 
     std::println(std::cout, "Creating entities.");
     for (int i = 0; i < expectedEntitiesNumOne; i++)
     {
-        entityArrayOne[i] = ECSCore::Object::CreateObject<TestObjectOne>(entity);
+        ECSCore::Object::CreateObject<TestObjectOne>(entity);
     }
     for (int i = 0; i < expectedEntitiesNumTwo; i++)
     {
-        entityArrayTwo[i] = ECSCore::Object::CreateObject<TestObjectTwo>(entity);
+        ECSCore::Object::CreateObject<TestObjectTwo>(entity);
     }
     for (int i = 0; i < expectedEntitiesNumThree; i++)
     {
-        entityArrayThree[i] = ECSCore::Object::CreateObject<TestObjectThree>(entity);
+        ECSCore::Object::CreateObject<TestObjectThree>(entity);
     }
 
     if (const auto objectCount =
