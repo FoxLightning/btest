@@ -135,7 +135,7 @@ bool AppInstance::GetVisibleActions(const EntityName& entityName, std::vector<st
     const auto manager = entity->GetManager<ActionManager>();
     if (manager.expired())
     {
-        std::println(std::cerr, "Mo action manager in {} entity.", entityName.str);
+        std::println(std::cerr, "No action manager in {} entity.", entityName.str);
         return false;
     }
 
