@@ -21,7 +21,6 @@ class IObjectManager
 {
   public:
     virtual ~IObjectManager() = default;
-    // TODO do something with return bool or remove it
     virtual bool TryAttachObjectToComponent(std::weak_ptr<Object> object) = 0;
     virtual void EraseExpiredWeakPointers()                               = 0;
 };
@@ -35,11 +34,14 @@ class TObjectManager : public IObjectManager
     TObjectManager& operator=(const TObjectManager&) = delete;
     TObjectManager& operator=(TObjectManager&&)      = delete;
 
+    // TODO forbit creation outside of entity
     TObjectManager()           = default;
     ~TObjectManager() override = default;
 
+    virtual bool PostAttachObjectToComponent(std::weak_ptr<Object> object);
+
     bool TryAttachObjectToComponent(std::weak_ptr<Object> object) override;
-    // TODO fix performance
+    // TODO fix performance and protect access
     void EraseExpiredWeakPointers() override;
 
     [[nodiscard]] std::weak_ptr<Object>       GetObject(const std::function<bool(std::weak_ptr<Object>)>& predicate);
@@ -58,12 +60,18 @@ class TObjectManager : public IObjectManager
 };
 
 template<typename tObjectType>
+bool TObjectManager<tObjectType>::PostAttachObjectToComponent(std::weak_ptr<Object> /* object */)
+{
+    return false;
+}
+
+template<typename tObjectType>
 bool TObjectManager<tObjectType>::TryAttachObjectToComponent(std::weak_ptr<Object> object)
 {
     if (std::dynamic_pointer_cast<tObjectType>(object.lock()))
     {
         objectRegistry.emplace_back(object);
-        return true;
+        return PostAttachObjectToComponent(object);
     }
     return false;
 }

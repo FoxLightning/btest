@@ -1,12 +1,12 @@
-﻿#include "ECSApp/CLI.hpp"
+﻿#include "ECSApp/ECSAppAPI.hpp"
 
 int main()
 {
-    const std::shared_ptr AppInstance{ecsapp::GetAppInstance()};
+    const std::shared_ptr AppInstance{ECSApp::GetAppInstance()};
     AppInstance->AddEntity("Test");
     AppInstance->RemoveEntity("Test");
-    AppInstance->AddComponent("Test", "Test", "Test");
-    AppInstance->RemoveComponent("Test", "Test", "Test");
+    AppInstance->AddManagerToEntity("Test", "Test");
+    AppInstance->RemoveManagerFromEntity("Test", "Test");
 
     return 0;
 }

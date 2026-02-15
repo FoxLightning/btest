@@ -1,7 +1,7 @@
-﻿#include "ECSApp/CLI.hpp"
+﻿#include "ECSApp/ECSAppAPI.hpp"
 
 int main()
 {
-    auto appInstance = ecsapp::GetAppInstance();
+    auto appInstance = ECSApp::GetAppInstance();
     return 0;
 }

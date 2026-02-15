@@ -13,7 +13,7 @@
 class TestObjectOne : public ECSCore::Object
 {
   public:
-    TestObjectOne(const std::weak_ptr<ECSCore::Entity>& inOwner) : ECSCore::Object(inOwner)
+    TestObjectOne(const std::weak_ptr<ECSCore::Entity>& inOwner) : Object(inOwner)
     {
     }
 };
@@ -21,7 +21,7 @@ class TestObjectOne : public ECSCore::Object
 class TestObjectTwo : public ECSCore::Object
 {
   public:
-    TestObjectTwo(const std::weak_ptr<ECSCore::Entity>& inOwner) : ECSCore::Object(inOwner)
+    TestObjectTwo(const std::weak_ptr<ECSCore::Entity>& inOwner) : Object(inOwner)
     {
     }
 };
@@ -29,7 +29,7 @@ class TestObjectTwo : public ECSCore::Object
 class TestObjectThree : public ECSCore::Object
 {
   public:
-    TestObjectThree(const std::weak_ptr<ECSCore::Entity>& inOwner) : ECSCore::Object(inOwner)
+    TestObjectThree(const std::weak_ptr<ECSCore::Entity>& inOwner) : Object(inOwner)
     {
     }
 };

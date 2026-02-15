@@ -1,23 +1,48 @@
-﻿#pragma once
+﻿// Proprietary & Confidential — All Rights Reserved — Copyright (c) 2026 Bohdan Lysychenko — See LICENSE.
 
-#include "ECSApp/CLI.hpp"
+#pragma once
 
-namespace ecsapp
+#include <cstddef>
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+#include "ECSApp/ECSAppAPI.hpp"
+
+namespace ECSCore
 {
-std::shared_ptr<IECSAPI> GetAppInstance();
+class Entity;
+}
 
-class AppInstance : public IECSAPI
+namespace ECSApp
+{
+std::shared_ptr<IECSAppAPI> GetAppInstance();
+
+class AppInstance : public IECSAppAPI
 {
   public:
-    AppInstance();
-    ~AppInstance() override;
+    AppInstance()           = default;
+    ~AppInstance() override = default;
 
-    bool   AddEntity(std::string Name) override;
-    bool   RemoveEntity(std::string Name) override;
-    bool   AddComponent(std::string EntityName, std::string ComponentType, std::string ComponentName) override;
-    bool   RemoveComponent(std::string EntityName, std::string ComponentType, std::string ComponentName) override;
-    bool   GetVisibleComponents(std::string EntityName, std::vector<std::string>& OutVisibleEntities) override;
+    bool AddEntity(const EntityName& name) override;
+    bool RemoveEntity(const EntityName& name) override;
+
+    bool AddManagerToEntity(const EntityName& entityName, const ManagerType& managerType) override;
+    bool RemoveManagerFromEntity(const EntityName& entityName, const ManagerType& managerType) override;
+
+    bool AddObjectToEntity(const EntityName& entityName, const ObjectType& objectType, const ObjectName& objectName) override;
+    bool RemoveActionFromEntity(const EntityName& entityName, const ObjectName& actionName) override;
+
+    bool GetVisibleActions(const EntityName& entityName, std::vector<std::string>& out) override;
+
     size_t GetEntityCount() override;
+
+  private:
+    static bool                      SpawnObject(const ObjectType& objectType, const ObjectName& objectName,
+                                                 const std::shared_ptr<ECSCore::Entity>& entity);
+    std::shared_ptr<ECSCore::Entity> GetEntity(const EntityName& entityName);
+    std::unordered_map<std::string, std::shared_ptr<ECSCore::Entity>> entityMap;
 };
 
-} // namespace ecsapp
+} // namespace ECSApp

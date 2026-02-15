@@ -9,7 +9,7 @@
 class TestObjectWithoutManager : public ECSCore::Object
 {
   public:
-    TestObjectWithoutManager(const std::weak_ptr<ECSCore::Entity>& inOwner) : ECSCore::Object(inOwner)
+    TestObjectWithoutManager(const std::weak_ptr<ECSCore::Entity>& inOwner) : Object(inOwner)
     {
     }
 };

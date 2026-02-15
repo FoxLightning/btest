@@ -2,7 +2,6 @@
 
 add_library(ECSCore STATIC
         Source/Entity.cpp
-        Source/ObjectManager.cpp
         Source/Object.cpp
 )
 
