@@ -5,7 +5,7 @@
 
 int main()
 {
-    CLIApp::CLIApp cliApp(ECSApp::GetAppInstance());
+    CLIApp::CLIApplicaition cliApp(ECSApp::GetAppInstance());
     while (!cliApp.ShouldExit())
     {
         cliApp.FetchInput();
