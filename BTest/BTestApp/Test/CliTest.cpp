@@ -64,7 +64,10 @@ class ECSAppMock : public ECSApp::IECSAppAPI
     }
 };
 
-static void TestAddEntityValid()
+namespace
+{
+
+void TestAddEntityValid()
 {
     auto               mockApi = std::make_shared<ECSAppMock>();
     std::istringstream input("add_ent TestEntity\n");
@@ -79,7 +82,7 @@ static void TestAddEntityValid()
     std::println(std::cout, "TestAddEntityValid passed.");
 }
 
-static void TestAddEntityMissingArgs()
+void TestAddEntityMissingArgs()
 {
     auto               mockApi = std::make_shared<ECSAppMock>();
     std::istringstream input("add_ent\n");
@@ -94,7 +97,7 @@ static void TestAddEntityMissingArgs()
     std::println(std::cout, "TestAddEntityMissingArgs passed.");
 }
 
-static void TestExitCommand()
+void TestExitCommand()
 {
     auto               mockApi = std::make_shared<ECSAppMock>();
     std::istringstream input("exit\n");
@@ -108,7 +111,7 @@ static void TestExitCommand()
     std::println(std::cout, "TestExitCommand passed.");
 }
 
-static void TestActionTypes()
+void TestActionTypes()
 {
     auto               mockApi = std::make_shared<ECSAppMock>();
     std::istringstream input("act_lst\n");
@@ -120,7 +123,7 @@ static void TestActionTypes()
     app.CallCommand();
 
     std::array<std::string_view, 2> const expectedOutput{"MoveAction", "ToggleAction"};
-    auto                            outString = output.str();
+    auto                                  outString = output.str();
     assert(error.str().empty());
     for (auto expected : expectedOutput)
     {
@@ -129,7 +132,7 @@ static void TestActionTypes()
     std::println(std::cout, "TestActionTypes passed.");
 }
 
-static void TestManagerTypes()
+void TestManagerTypes()
 {
     auto               mockApi = std::make_shared<ECSAppMock>();
     std::istringstream input("mng_lst\n");
@@ -141,7 +144,7 @@ static void TestManagerTypes()
     app.CallCommand();
 
     std::array<std::string_view, 1> const expectedOutput{"ActionManager"};
-    auto                            outString = output.str();
+    auto                                  outString = output.str();
     assert(error.str().empty());
     for (auto expected : expectedOutput)
     {
@@ -150,15 +153,17 @@ static void TestManagerTypes()
     std::println(std::cout, "TestManagerTypes passed.");
 }
 
+} // namespace
+
 int main()
 {
     try
     {
-        TestAddEntityValid();
-        TestAddEntityMissingArgs();
-        TestExitCommand();
-        TestActionTypes();
-        TestManagerTypes();
+        ::TestAddEntityValid();
+        ::TestAddEntityMissingArgs();
+        ::TestExitCommand();
+        ::TestActionTypes();
+        ::TestManagerTypes();
 
         return 0;
     }
