@@ -11,184 +11,183 @@
 
 namespace CLIApp
 {
-void CLIApp::FetchInput()
+void CLIApplicaition::FetchInput()
 {
     std::string input;
-    std::getline(std::cin, input);
+    std::getline(inputStream, input);
 
     std::istringstream iss(input);
     std::string        currentWord;
 
-    iss >> command;
+    iss >> commandState.command;
     while (iss >> currentWord)
     {
-        arguments.push_back(currentWord);
+        commandState.arguments.push_back(currentWord);
     }
 }
 
-void CLIApp::CallCommand()
+void CLIApplicaition::CallCommand()
 {
-    auto commandIt = GCommandsMap.find(command);
+    auto commandIt = GCommandsMap.find(commandState.command);
 
-    if (command == GCommandExit)
+    if (commandState.command == GCommandExit)
     {
         shouldExit = true;
         return;
     }
-    else if (command == GCommandAddEnt)
+    else if (commandState.command == GCommandAddEnt)
     {
-        if (arguments.size() == commandIt->second.arguments.size())
+        if (commandState.arguments.size() == commandIt->second.arguments.size())
         {
-            ecsApp->AddEntity(ECSApp::EntityName{arguments[0]});
+            ecsApp->AddEntity(ECSApp::EntityName{commandState.arguments[0]});
             return;
         }
-        std::println(std::cerr, R"(Invalid arguments count for "{}" command. Expected {}, got {})", command,
-                     commandIt->second.arguments.size(), arguments.size());
+        std::println(errorStream, R"(Invalid arguments count for "{}" command. Expected {}, got {})", commandState.command,
+                     commandIt->second.arguments.size(), commandState.arguments.size());
     }
-    else if (command == GCommandDelEnt)
+    else if (commandState.command == GCommandDelEnt)
     {
-        if (arguments.size() == commandIt->second.arguments.size())
+        if (commandState.arguments.size() == commandIt->second.arguments.size())
         {
-            ecsApp->RemoveEntity(ECSApp::EntityName{arguments[0]});
+            ecsApp->RemoveEntity(ECSApp::EntityName{commandState.arguments[0]});
             return;
         }
-        std::println(std::cerr, R"(Invalid arguments count for "{}" command. Expected {}, got {})", command,
-                     commandIt->second.arguments.size(), arguments.size());
+        std::println(errorStream, R"(Invalid arguments count for "{}" command. Expected {}, got {})", commandState.command,
+                     commandIt->second.arguments.size(), commandState.arguments.size());
     }
-    else if (command == GCommandAddObj)
+    else if (commandState.command == GCommandAddObj)
     {
-        if (arguments.size() == commandIt->second.arguments.size())
+        if (commandState.arguments.size() == commandIt->second.arguments.size())
         {
-            ecsApp->AddObjectToEntity(ECSApp::EntityName{arguments[0]}, ECSApp::ObjectType{arguments[1]},
-                                      ECSApp::ObjectName{arguments[2]});
+            ecsApp->AddObjectToEntity(ECSApp::EntityName{commandState.arguments[0]}, ECSApp::ObjectType{commandState.arguments[1]},
+                                      ECSApp::ObjectName{commandState.arguments[2]});
             return;
         }
-        std::println(std::cerr, R"(Invalid arguments count for "{}" command. Expected {}, got {})", command,
-                     commandIt->second.arguments.size(), arguments.size());
+        std::println(errorStream, R"(Invalid arguments count for "{}" command. Expected {}, got {})", commandState.command,
+                     commandIt->second.arguments.size(), commandState.arguments.size());
     }
-    else if (command == GCommandDelObj)
+    else if (commandState.command == GCommandDelObj)
     {
-        if (arguments.size() == commandIt->second.arguments.size())
+        if (commandState.arguments.size() == commandIt->second.arguments.size())
         {
-            ecsApp->RemoveActionFromEntity(ECSApp::EntityName{arguments[0]}, ECSApp::ObjectName{arguments[1]});
+            ecsApp->RemoveActionFromEntity(ECSApp::EntityName{commandState.arguments[0]}, ECSApp::ObjectName{commandState.arguments[1]});
             return;
         }
-        std::println(std::cerr, R"(Invalid arguments count for "{}" command. Expected {}, got {})", command,
-                     commandIt->second.arguments.size(), arguments.size());
+        std::println(errorStream, R"(Invalid arguments count for "{}" command. Expected {}, got {})", commandState.command,
+                     commandIt->second.arguments.size(), commandState.arguments.size());
     }
-    else if (command == GCommandAddMng)
+    else if (commandState.command == GCommandAddMng)
     {
-        if (arguments.size() == commandIt->second.arguments.size())
+        if (commandState.arguments.size() == commandIt->second.arguments.size())
         {
-            ecsApp->AddManagerToEntity(ECSApp::EntityName{arguments[0]}, ECSApp::ManagerType{arguments[1]});
+            ecsApp->AddManagerToEntity(ECSApp::EntityName{commandState.arguments[0]}, ECSApp::ManagerType{commandState.arguments[1]});
             return;
         }
-        std::println(std::cerr, R"(Invalid arguments count for "{}" command. Expected {}, got {})", command,
-                     commandIt->second.arguments.size(), arguments.size());
+        std::println(errorStream, R"(Invalid arguments count for "{}" command. Expected {}, got {})", commandState.command,
+                     commandIt->second.arguments.size(), commandState.arguments.size());
     }
-    else if (command == GCommandDelMng)
+    else if (commandState.command == GCommandDelMng)
     {
-        if (arguments.size() == commandIt->second.arguments.size())
+        if (commandState.arguments.size() == commandIt->second.arguments.size())
         {
-            ecsApp->RemoveManagerFromEntity(ECSApp::EntityName{arguments[0]}, ECSApp::ManagerType{arguments[1]});
+            ecsApp->RemoveManagerFromEntity(ECSApp::EntityName{commandState.arguments[0]}, ECSApp::ManagerType{commandState.arguments[1]});
             return;
         }
-        std::println(std::cerr, R"(Invalid arguments count for "{}" command. Expected {}, got {})", command,
-                     commandIt->second.arguments.size(), arguments.size());
+        std::println(errorStream, R"(Invalid arguments count for "{}" command. Expected {}, got {})", commandState.command,
+                     commandIt->second.arguments.size(), commandState.arguments.size());
     }
-    else if (command == GCommandPrint)
+    else if (commandState.command == GCommandPrint)
     {
-        if (arguments.size() == commandIt->second.arguments.size())
+        if (commandState.arguments.size() == commandIt->second.arguments.size())
         {
             std::vector<std::string> visibleActions;
-            if (ecsApp->GetVisibleActions(ECSApp::EntityName{arguments[0]}, visibleActions))
+            if (ecsApp->GetVisibleActions(ECSApp::EntityName{commandState.arguments[0]}, visibleActions))
             {
                 if (visibleActions.empty())
                 {
-                    std::println(std::cout, R"(No visible actions for "{}" entity.)", arguments[0]);
+                    std::println(outputStream, R"(No visible actions for "{}" entity.)", commandState.arguments[0]);
                     return;
                 }
-                std::println(std::cout, R"(Visible actions for "{}" entity:)", arguments[0]);
+                std::println(outputStream, R"(Visible actions for "{}" entity:)", commandState.arguments[0]);
                 for (const auto& action : visibleActions)
                 {
-                    std::println(std::cout, R"(  {})", action);
+                    std::println(outputStream, R"(  {})", action);
                 }
             }
             return;
         }
-        std::println(std::cerr, R"(Invalid arguments count for "{}" command. Expected {}, got {})", command,
-                     commandIt->second.arguments.size(), arguments.size());
+        std::println(errorStream, R"(Invalid arguments count for "{}" command. Expected {}, got {})", commandState.command,
+                     commandIt->second.arguments.size(), commandState.arguments.size());
     }
-    else if (command == GCommandMngLst)
+    else if (commandState.command == GCommandMngLst)
     {
-        if (arguments.size() == commandIt->second.arguments.size())
+        if (commandState.arguments.size() == commandIt->second.arguments.size())
         {
             std::vector<std::string> managers;
             if (ecsApp->GetManagerTypes(managers))
             {
                 if (managers.empty())
                 {
-                    std::println(std::cout, R"(No available manager types.)");
+                    std::println(outputStream, R"(No available manager types.)");
                     return;
                 }
-                std::println(std::cout, R"(Available manager types:)");
+                std::println(outputStream, R"(Available manager types:)");
                 for (const auto& manager : managers)
                 {
-                    std::println(std::cout, R"(  {})", manager);
+                    std::println(outputStream, R"(  {})", manager);
                 }
             }
             return;
         }
-        std::println(std::cerr, R"(Invalid arguments count for "{}" command. Expected {}, got {})", command,
-                     commandIt->second.arguments.size(), arguments.size());
+        std::println(errorStream, R"(Invalid arguments count for "{}" command. Expected {}, got {})", commandState.command,
+                     commandIt->second.arguments.size(), commandState.arguments.size());
     }
-    else if (command == GCommandActLst)
+    else if (commandState.command == GCommandActLst)
     {
-        if (arguments.size() == commandIt->second.arguments.size())
+        if (commandState.arguments.size() == commandIt->second.arguments.size())
         {
             std::vector<std::string> actions;
             if (ecsApp->GetActionTypes(actions))
             {
                 if (actions.empty())
                 {
-                    std::println(std::cout, R"(No available action types.)");
+                    std::println(outputStream, R"(No available action types.)");
                     return;
                 }
-                std::println(std::cout, R"(Available action types:)");
+                std::println(outputStream, R"(Available action types:)");
                 for (const auto& action : actions)
                 {
-                    std::println(std::cout, R"(  {})", action);
+                    std::println(outputStream, R"(  {})", action);
                 }
             }
             return;
         }
-        std::println(std::cerr, R"(Invalid arguments count for "{}" command. Expected {}, got {})", command,
-                     commandIt->second.arguments.size(), arguments.size());
+        std::println(errorStream, R"(Invalid arguments count for "{}" command. Expected {}, got {})",
+                     commandState.command, commandIt->second.arguments.size(), commandState.arguments.size());
     }
-    else if (command == GCommandHelp)
+    else if (commandState.command == GCommandHelp)
     {
         PrintHelp();
         return;
     }
     else
     {
-        std::println(std::cerr, R"(Unknown command: "{}")", command);
+        std::println(errorStream, R"(Unknown command: "{}")", commandState.command);
     }
-    std::println(std::cout, GInvalidCommandError, "help");
+    std::println(outputStream, GInvalidCommandError, "help");
 }
 
-void CLIApp::ResetState()
+void CLIApplicaition::ResetState()
 {
-    command = "";
-    arguments.clear();
+    commandState = {};
 }
 
-bool CLIApp::ShouldExit() const
+bool CLIApplicaition::ShouldExit() const
 {
     return shouldExit;
 }
 
-void CLIApp::PrintHelp()
+void CLIApplicaition::PrintHelp()
 {
     auto FormatArgs = [](const auto& argsVector)
     {
@@ -202,11 +201,11 @@ void CLIApp::PrintHelp()
         return result;
     };
 
-    std::println(std::cout, R"(Commands:)");
+    std::println(outputStream, R"(Commands:)");
 
     for (const auto& [commandName, commandInfo] : GCommandsMap)
     {
-        std::println(std::cout, R"(  "{}" {} - {})", commandName, FormatArgs(commandInfo.arguments),
+        std::println(outputStream, R"(  "{}" {} - {})", commandName, FormatArgs(commandInfo.arguments),
                      commandInfo.description);
     }
 }

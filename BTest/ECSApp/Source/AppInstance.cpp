@@ -160,14 +160,14 @@ bool AppInstance::GetVisibleActions(const EntityName& entityName, std::vector<st
 
 bool AppInstance::GetManagerTypes(std::vector<std::string>& out)
 {
-    out.push_back(ActionManager::GetManagerTypeName());
+    out.emplace_back(ActionManager::GetManagerTypeName());
     return true;
 }
 
 bool AppInstance::GetActionTypes(std::vector<std::string>& out)
 {
-    out.push_back(MoveAction::GetTypeName());
-    out.push_back(ToggleAction::GetTypeName());
+    out.emplace_back(MoveAction::GetTypeName());
+    out.emplace_back(ToggleAction::GetTypeName());
     return true;
 }
 

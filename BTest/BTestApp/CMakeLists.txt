@@ -6,5 +6,15 @@ add_executable(BTestApp
 )
 
 target_link_libraries(BTestApp
-        PRIVATE ECSApp
+        PUBLIC ECSApp
 )
+
+add_library(CLIApp STATIC
+        Source/CliAppState.cpp
+)
+
+target_link_libraries(CLIApp
+        PUBLIC ECSApp
+)
+
+add_custom_test(CliTest CLIApp CLIApp)
