@@ -8,7 +8,9 @@ Checks: >
   readability-*,
   misc-*,
   -modernize-use-trailing-return-type,
-  -readability-magic-numbers
+  -readability-magic-numbers,
+  -bugprone-exception-escape,
+  -readability-function-cognitive-complexity
 WarningsAsErrors: ""
 CheckOptions:
   # Naming cases

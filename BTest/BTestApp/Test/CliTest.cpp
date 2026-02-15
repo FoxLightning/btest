@@ -2,9 +2,15 @@
 
 #include <array>
 #include <cassert>
+#include <cstddef>
+#include <exception>
 #include <iostream>
 #include <memory>
+#include <print>
 #include <sstream>
+#include <string>
+#include <string_view>
+#include <vector>
 
 #include "ECSApp/ECSAppAPI.hpp"
 
@@ -29,7 +35,8 @@ class ECSAppMock : public ECSApp::IECSAppAPI
     {
         return true;
     }
-    bool AddObjectToEntity(const ECSApp::EntityName& /*name*/, const ECSApp::ObjectType& /*type*/, const ECSApp::ObjectName& /*objName*/) override
+    bool AddObjectToEntity(const ECSApp::EntityName& /*name*/, const ECSApp::ObjectType& /*type*/,
+                           const ECSApp::ObjectName& /*objName*/) override
     {
         return true;
     }
@@ -57,7 +64,7 @@ class ECSAppMock : public ECSApp::IECSAppAPI
     }
 };
 
-void TestAddEntityValid()
+static void TestAddEntityValid()
 {
     auto               mockApi = std::make_shared<ECSAppMock>();
     std::istringstream input("add_ent TestEntity\n");
@@ -72,7 +79,7 @@ void TestAddEntityValid()
     std::println(std::cout, "TestAddEntityValid passed.");
 }
 
-void TestAddEntityMissingArgs()
+static void TestAddEntityMissingArgs()
 {
     auto               mockApi = std::make_shared<ECSAppMock>();
     std::istringstream input("add_ent\n");
@@ -87,7 +94,7 @@ void TestAddEntityMissingArgs()
     std::println(std::cout, "TestAddEntityMissingArgs passed.");
 }
 
-void TestExitCommand()
+static void TestExitCommand()
 {
     auto               mockApi = std::make_shared<ECSAppMock>();
     std::istringstream input("exit\n");
@@ -101,7 +108,7 @@ void TestExitCommand()
     std::println(std::cout, "TestExitCommand passed.");
 }
 
-void TestActionTypes()
+static void TestActionTypes()
 {
     auto               mockApi = std::make_shared<ECSAppMock>();
     std::istringstream input("act_lst\n");
@@ -112,8 +119,8 @@ void TestActionTypes()
     app.FetchInput();
     app.CallCommand();
 
-    std::array<std::string_view, 2> expectedOutput{"MoveAction", "ToggleAction"};
-    auto outString = output.str();
+    std::array<std::string_view, 2> const expectedOutput{"MoveAction", "ToggleAction"};
+    auto                            outString = output.str();
     assert(error.str().empty());
     for (auto expected : expectedOutput)
     {
@@ -122,7 +129,7 @@ void TestActionTypes()
     std::println(std::cout, "TestActionTypes passed.");
 }
 
-void TestManagerTypes()
+static void TestManagerTypes()
 {
     auto               mockApi = std::make_shared<ECSAppMock>();
     std::istringstream input("mng_lst\n");
@@ -133,8 +140,8 @@ void TestManagerTypes()
     app.FetchInput();
     app.CallCommand();
 
-    std::array<std::string_view, 1> expectedOutput{"ActionManager"};
-    auto outString = output.str();
+    std::array<std::string_view, 1> const expectedOutput{"ActionManager"};
+    auto                            outString = output.str();
     assert(error.str().empty());
     for (auto expected : expectedOutput)
     {

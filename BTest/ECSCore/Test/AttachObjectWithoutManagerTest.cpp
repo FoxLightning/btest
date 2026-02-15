@@ -14,9 +14,14 @@ class TestObjectWithoutManager : public ECSCore::Object
     }
 };
 
-// TODO
 int main()
 {
     const auto entity = std::make_shared<ECSCore::Entity>();
     auto       obj1   = ECSCore::Object::CreateObject<TestObjectWithoutManager>(entity);
+    if (!obj.expired())
+    {
+        std::cerr << "Object should be null." << std::endl;
+        return 1;
+    }
+    return 0;
 }

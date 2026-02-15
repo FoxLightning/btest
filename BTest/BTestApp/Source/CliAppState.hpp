@@ -72,7 +72,7 @@ class CLIApplicaition
     bool ShouldExit() const;
 
   private:
-    void PrintHelp();
+    void PrintHelp() const;
 
     std::shared_ptr<ECSApp::IECSAppAPI> ecsApp;
 

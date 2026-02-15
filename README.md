@@ -61,12 +61,18 @@ The project supports clangd, so you can use any IDE with clangd support.
 
 ### Linter
 
+Clang-tidy also runs during a build process.
 To check all problems without recompiling the project, you can run clang-tidy with the following command.  
 This command considers the `build` folder as the CMake generated project folder.
 
-```PS1
+``` PS1
 run-clang-tidy -p build
 ```
+Add `-fix` argument to automatically fix all problems that can be fixed by clang-tidy automaticaly.
+``` PS1 
+run-clang-tidy -p build -fix
+```
+
 
 ### How to test
 

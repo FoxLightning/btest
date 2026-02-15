@@ -1,10 +1,10 @@
 ﻿// Proprietary & Confidential — All Rights Reserved — Copyright (c) 2026 Bohdan Lysychenko — See LICENSE.
 
-#include <array>
-#include <chrono>
+#include <cstdint>
 #include <iostream>
 #include <memory>
-#include <ostream>
+#include <print>
+#include <vector>
 
 #include "ECSCore/Entity.hpp"
 #include "ECSCore/Object.hpp"

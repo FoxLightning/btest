@@ -2,24 +2,25 @@
 
 #include <iostream>
 #include <print>
+#include <string>
+#include <vector>
 
 #include "ECSApp/ECSAppAPI.hpp"
 
 int main()
 {
-    const auto entityOneName = ECSApp::EntityName{ "TestEntityOne" };
-    const auto entityTwoName = ECSApp::EntityName{ "TestEntityTwo" };
-    const auto actionManagerType = ECSApp::ManagerType{ "ActionManager" };
+    const auto entityOneName     = ECSApp::EntityName{"TestEntityOne"};
+    const auto entityTwoName     = ECSApp::EntityName{"TestEntityTwo"};
+    const auto actionManagerType = ECSApp::ManagerType{"ActionManager"};
 
-    const auto moveActionType = ECSApp::ObjectType{ "MoveAction" };
-    const auto toggleActionType = ECSApp::ObjectType{ "ToggleAction" };
-    const auto actionNameOne = ECSApp::ObjectName{ "MoveTo10x20" };
-    const auto actionNameTwo = ECSApp::ObjectName{ "ToggleToTrue" };
+    const auto moveActionType   = ECSApp::ObjectType{"MoveAction"};
+    const auto toggleActionType = ECSApp::ObjectType{"ToggleAction"};
+    const auto actionNameOne    = ECSApp::ObjectName{"MoveTo10x20"};
+    const auto actionNameTwo    = ECSApp::ObjectName{"ToggleToTrue"};
 
     const auto appInstance = ECSApp::GetAppInstance();
     appInstance->AddEntity(entityOneName);
     appInstance->AddEntity(entityTwoName);
-
 
     appInstance->AddManagerToEntity(entityOneName, actionManagerType);
     appInstance->AddManagerToEntity(entityTwoName, actionManagerType);
