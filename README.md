@@ -73,6 +73,10 @@ Add `-fix` argument to automatically fix all problems that can be fixed by clang
 run-clang-tidy -p build -fix
 ```
 
+### Formatter
+
+Just use VSCode or CLion 
+
 
 ### How to test
 
