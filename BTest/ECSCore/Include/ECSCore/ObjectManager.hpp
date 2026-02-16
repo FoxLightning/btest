@@ -34,14 +34,12 @@ class TObjectManager : public IObjectManager
     TObjectManager& operator=(const TObjectManager&) = delete;
     TObjectManager& operator=(TObjectManager&&)      = delete;
 
-    // TODO forbit creation outside of entity
     TObjectManager()           = default;
     ~TObjectManager() override = default;
 
     virtual bool PostAttachObjectToComponent(std::weak_ptr<Object> object);
 
     bool TryAttachObjectToComponent(std::weak_ptr<Object> object) override;
-    // TODO fix performance and protect access
     void EraseExpiredWeakPointers() override;
 
     [[nodiscard]] std::weak_ptr<Object>       GetObject(const std::function<bool(std::weak_ptr<Object>)>& predicate);
@@ -52,10 +50,12 @@ class TObjectManager : public IObjectManager
 
     [[nodiscard]] size_t GetObjectCount() const
     {
-        return objectRegistry.size();
+        return objectRegistry.size() - expiredCount;
     }
 
   private:
+    static constexpr int32_t GExpiredLimit{ 100 };
+    int32_t expiredCount{ 0 };
     std::vector<std::weak_ptr<Object>> objectRegistry;
 };
 
@@ -79,7 +79,13 @@ bool TObjectManager<tObjectType>::TryAttachObjectToComponent(std::weak_ptr<Objec
 template<typename tObjectType>
 void TObjectManager<tObjectType>::EraseExpiredWeakPointers()
 {
-    std::erase_if(objectRegistry, [](const std::weak_ptr<Object>& weakObject) { return weakObject.expired(); });
+    if (expiredCount > GExpiredLimit)
+    {
+        std::erase_if(objectRegistry, [](const std::weak_ptr<Object>& weakObject) { return weakObject.expired(); });
+        expiredCount = 0;
+        return;
+    }
+    ++expiredCount;
 }
 
 template<typename tObjectType>
