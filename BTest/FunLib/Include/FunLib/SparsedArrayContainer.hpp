@@ -3,7 +3,10 @@
 #pragma once
 
 #include <cstddef>
+#include <functional>
 #include <memory>
+#include <ranges>
+#include <vector>
 
 #include "ContainerInterface.hpp"
 

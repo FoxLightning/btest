@@ -18,3 +18,5 @@ target_link_libraries(ECSCore
 
 add_custom_test(ObjectCreateDeleteTest ECSCore ECSCore)
 add_custom_test(ManagerCreateDeleteTest ECSCore ECSCore)
+add_custom_test(ObjectCreateDeleteTestSparsedArray ECSCore ECSCore)
+add_custom_test(ManagerCreateDeleteTestSparsedArray ECSCore ECSCore)

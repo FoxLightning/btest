@@ -29,7 +29,7 @@ class IObjectManager
     virtual void EraseExpiredWeakPointers()                               = 0;
 };
 
-template<typename tObjectType, typename tObjectContainer = FunLib::TSparseArrayContainer<tObjectType>>
+template<typename tObjectType, typename tObjectContainer = FunLib::TDynamicArrayContainer<tObjectType>>
 class TObjectManager : public IObjectManager
 {
   public:

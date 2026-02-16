@@ -8,14 +8,11 @@
 #include <ratio>
 #include <vector>
 
-#include "FunLib/SparsedArrayContainer.hpp"
-
 #include "ECSCore/Entity.hpp"
 #include "ECSCore/Object.hpp"
 #include "ECSCore/ObjectManager.hpp"
 
-class ObjectHolderManager
-    : public ECSCore::TObjectManager<ECSCore::Object, FunLib::TSparseArrayContainer<ECSCore::Object>>
+class ObjectHolderManager : public ECSCore::TObjectManager<ECSCore::Object, FunLib::TSparseArrayContainer<ECSCore::Object>>
 {
   public:
     bool PostAttachObjectToComponent(const std::weak_ptr<ECSCore::Object>& object) override

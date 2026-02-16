@@ -2,8 +2,12 @@
 
 #pragma once
 
+#include <algorithm>
 #include <cstddef>
+#include <functional>
 #include <memory>
+#include <ranges>
+#include <vector>
 
 #include "ContainerInterface.hpp"
 
