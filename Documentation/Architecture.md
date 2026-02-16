@@ -7,10 +7,10 @@ There are no double-sided dependencies between modules. Strictly layered archite
 flowchart TD
 
 %% Entities
-    CLIApp["CLI Application (btestapp)"]
-    ECSCore["ECS Core (ecscore)"]
-    ECSApp["ECS Application (ecsapp)"]
-    FunLib["Functional Library (funlib)"]
+    CLIApp["CLI Application (BTestApp)"]
+    ECSCore["ECS Core (ECSCore)"]
+    ECSApp["ECS Application (ECSApp)"]
+    FunLib["Functional Library (FunLib)"]
 %% Relations
     ECSApp --> ECSCore;
     CLIApp --> ECSApp;
