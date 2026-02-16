@@ -4,6 +4,8 @@ This is a test task for Bohemia Interactive for a programmer role.
 
 [Architecture documentation can be found here](Documentation/Architecture.md)
 
+[Report with results can be found here](Documentation/Results.md)
+
 # How to use
 
 The project is built on top of the CMake project generator. There are two ways to build the project:
@@ -50,8 +52,11 @@ Recommended dependencies:
 - Open a terminal in the root folder.
 - Run `cmake -S . -B build -G "Visual Studio 17 2022"`.
 
-3. Go to the `build` folder and open the generated solution file `BTest.sln` with the corresponding version of Visual Studio.
-4. Choose `BTestApp` as the startup project and run it.
+3. Build generated project
+- Run `cmake --build build --config Debug` to build the project in Debug configuration.
+- Go to the `build` folder and find a corresponding executable file for `BTestApp`
+- You can also open the generated solution file in Visual Studio and build it from there. 
+
 
 # How to commit
 
