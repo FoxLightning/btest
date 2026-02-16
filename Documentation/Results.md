@@ -1,6 +1,6 @@
 ﻿# Design document
 
-Architecture documentation is available here: [Documentation/Architecture.md](Documentation/Architecture.md)
+Architecture documentation is available here: [Documentation/Architecture.md](Architecture.md)
 
 # Container choice
 
