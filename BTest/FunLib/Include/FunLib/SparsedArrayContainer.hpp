@@ -3,6 +3,7 @@
 #pragma once
 
 #include <cstddef>
+#include <functional>
 #include <memory>
 #include <ranges>
 
@@ -26,7 +27,7 @@ class TSparseArrayContainer : public IElementContainer<tElement>
             size_t freeIndex = freeSlotIndices.back();
             freeSlotIndices.pop_back();
 
-            elementRegistry[freeIndex].element = element;
+            elementRegistry[freeIndex].element    = element;
             elementRegistry[freeIndex].isOccupied = true;
         }
         ++occupiedSlotsCount;
@@ -34,7 +35,7 @@ class TSparseArrayContainer : public IElementContainer<tElement>
 
     void EraseExpired() override
     {
-        for (int i = 0; i < elementRegistry.size(); ++i)
+        for (size_t i = 0; i < elementRegistry.size(); ++i)
         {
             if (auto& slot = elementRegistry[i]; slot.isOccupied && slot.element.expired())
             {
@@ -47,7 +48,8 @@ class TSparseArrayContainer : public IElementContainer<tElement>
 
     [[nodiscard]] std::weak_ptr<tElement> Find(const std::function<bool(std::weak_ptr<tElement>)>& predicate) override
     {
-        return std::const_pointer_cast<tElement>(static_cast<const TSparseArrayContainer*>(this)->Find(predicate).lock());
+        return std::const_pointer_cast<tElement>(
+            static_cast<const TSparseArrayContainer*>(this)->Find(predicate).lock());
     }
 
     [[nodiscard]] std::weak_ptr<const tElement> Find(

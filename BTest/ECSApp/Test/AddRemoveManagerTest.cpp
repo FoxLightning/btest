@@ -42,7 +42,7 @@ int main()
     std::println(std::cout, "Successfully added and retrieved action for entity one.");
 
     actionList.clear();
-    if (!appInstance->GetVisibleActions(entityTwoName, actionList) && !actionList.empty())
+    if (!appInstance->GetVisibleActions(entityTwoName, actionList) || actionList.empty())
     {
         return 1;
     }
