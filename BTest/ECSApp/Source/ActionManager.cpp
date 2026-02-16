@@ -28,7 +28,7 @@ std::vector<std::weak_ptr<ECSApp::ActionObjectBase>> ECSApp::ActionManager::GetV
     return outArray;
 }
 
-bool ECSApp::ActionManager::PostAttachObjectToComponent(const std::weak_ptr<ECSCore::Object> object)
+bool ECSApp::ActionManager::PostAttachObjectToComponent(const std::weak_ptr<ECSCore::Object>& object)
 {
     if (const auto action = std::dynamic_pointer_cast<ActionObjectBase>(object.lock()))
     {

@@ -24,7 +24,7 @@ class IObjectManager
 {
   public:
     virtual ~IObjectManager()                                             = default;
-    virtual bool TryAttachObjectToComponent(std::weak_ptr<Object> object) = 0;
+    virtual bool TryAttachObjectToComponent(const std::weak_ptr<Object>& object) = 0;
     virtual void EraseExpiredWeakPointers()                               = 0;
 };
 
@@ -40,9 +40,9 @@ class TObjectManager : public IObjectManager
     TObjectManager()           = default;
     ~TObjectManager() override = default;
 
-    virtual bool PostAttachObjectToComponent(std::weak_ptr<Object> object);
+    virtual bool PostAttachObjectToComponent(const std::weak_ptr<Object>& object);
 
-    bool TryAttachObjectToComponent(std::weak_ptr<Object> object) override;
+    bool TryAttachObjectToComponent(const std::weak_ptr<Object>& object) override;
     void EraseExpiredWeakPointers() override;
 
     [[nodiscard]] std::weak_ptr<Object>       GetObject(const std::function<bool(std::weak_ptr<Object>)>& predicate);
@@ -62,14 +62,26 @@ class TObjectManager : public IObjectManager
     tObjectContainer         objectRegistry;
 };
 
+
+/**
+ * @brief Called after successfully attaching an object to the component, used to determine ownership.
+ *
+ * This virtual method is called after an object has been validated and added to the object registry.
+ * The main goal is to determine ownership, classes which return true - are owners of the object and
+ * stores shared reference.
+ * Allowed only one owner for an entity
+ *
+ * @return bool True - manager is an owner of an entity and store shared ptr to it
+ *              False - manager is not an owner of entity and store only weak ptr to it
+ */
 template<typename tObjectType, typename tObjectContainer>
-bool TObjectManager<tObjectType, tObjectContainer>::PostAttachObjectToComponent(std::weak_ptr<Object> /* object */)
+bool TObjectManager<tObjectType, tObjectContainer>::PostAttachObjectToComponent(const std::weak_ptr<Object>& /* object */)
 {
     return false;
 }
 
 template<typename tObjectType, typename tObjectContainer>
-bool TObjectManager<tObjectType, tObjectContainer>::TryAttachObjectToComponent(std::weak_ptr<Object> object)
+bool TObjectManager<tObjectType, tObjectContainer>::TryAttachObjectToComponent(const std::weak_ptr<Object>& object)
 {
     if (const auto castedObject = std::dynamic_pointer_cast<tObjectType>(object.lock()))
     {

@@ -15,7 +15,7 @@
 class ObjectHolderManager : public ECSCore::TObjectManager<ECSCore::Object>
 {
   public:
-    bool PostAttachObjectToComponent(std::weak_ptr<ECSCore::Object> object) override
+    bool PostAttachObjectToComponent(const std::weak_ptr<ECSCore::Object>& object) override
     {
         objects.push_back(object.lock());
         return true;

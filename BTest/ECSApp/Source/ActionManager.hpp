@@ -22,7 +22,7 @@ class ActionManager : public ECSCore::TObjectManager<ActionObjectBase>
     }
 
     [[nodiscard]] std::vector<std::weak_ptr<ActionObjectBase>> GetVisibleActions() const;
-    bool PostAttachObjectToComponent(std::weak_ptr<ECSCore::Object> object) override;
+    bool PostAttachObjectToComponent(const std::weak_ptr<ECSCore::Object>& object) override;
     bool RemoveAction(const std::string& actionName);
 
     ActionManager() = default;
