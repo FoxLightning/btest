@@ -10,6 +10,12 @@ template<typename tElement>
 class IElementContainer
 {
   public:
+    IElementContainer(const IElementContainer&)                = delete;
+    IElementContainer(IElementContainer&&)                     = delete;
+    IElementContainer& operator=(const IElementContainer&)     = delete;
+    IElementContainer& operator=(IElementContainer&&) noexcept = delete;
+
+    IElementContainer()                                        = default;
     virtual ~IElementContainer() = default;
 
     virtual void                          Add(std::weak_ptr<tElement> element)                                      = 0;
