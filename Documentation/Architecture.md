@@ -40,7 +40,7 @@ flowchart TD
 
 ### Functional Library
 
-- Provide `TName` template
+- Provide custom containers
 
 # ECS Core Class Diagram
 

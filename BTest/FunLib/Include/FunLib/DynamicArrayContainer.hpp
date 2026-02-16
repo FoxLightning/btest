@@ -10,6 +10,9 @@
 namespace FunLib
 {
 
+/*
+ * Adapter for std::vector
+ */
 template<typename tElement>
 class TDynamicArrayContainer : public IElementContainer<tElement>
 {
