@@ -64,7 +64,7 @@ classDiagram
     }
 
 %% relationships
-    ObjectManager "1" *-- "0..*" Entity
+    ObjectManager "1" o-- "0..*" Entity
     Object "1" o-- "0..*" ObjectManager
 ```
 
