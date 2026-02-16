@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "FunLib/DynamicArrayContainer.hpp"
+#include "FunLib/SparsedArrayContainer.hpp"
 
 #include "Object.hpp"
 
@@ -28,7 +29,7 @@ class IObjectManager
     virtual void EraseExpiredWeakPointers()                               = 0;
 };
 
-template<typename tObjectType, typename tObjectContainer = FunLib::TDynamicArrayContainer<tObjectType>>
+template<typename tObjectType, typename tObjectContainer = FunLib::TSparseArrayContainer<tObjectType>>
 class TObjectManager : public IObjectManager
 {
   public:

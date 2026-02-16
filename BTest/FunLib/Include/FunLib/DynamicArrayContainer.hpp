@@ -29,8 +29,7 @@ class TDynamicArrayContainer : public IElementContainer<tElement>
     }
     [[nodiscard]] std::weak_ptr<tElement> Find(const std::function<bool(std::weak_ptr<tElement>)>& predicate) override
     {
-        const auto iterator = std::ranges::find_if(elementRegistry, predicate);
-        return iterator != elementRegistry.end() ? std::weak_ptr<tElement>{*iterator} : std::weak_ptr<tElement>{};
+        return std::const_pointer_cast<tElement>(static_cast<const TDynamicArrayContainer*>(this)->Find(predicate).lock());
     }
     [[nodiscard]] std::weak_ptr<const tElement> Find(
         const std::function<bool(std::weak_ptr<tElement>)>& predicate) const override
