@@ -10,5 +10,11 @@ target_include_directories(ECSCore
         ${CMAKE_CURRENT_SOURCE_DIR}/Include
 )
 
+target_link_libraries(ECSCore
+        PUBLIC
+        FunLib
+)
+
+
 add_custom_test(ObjectCreateDeleteTest ECSCore ECSCore)
 add_custom_test(ManagerCreateDeleteTest ECSCore ECSCore)

@@ -11,67 +11,14 @@
 #include <type_traits>
 #include <vector>
 
+#include "FunLib/DynamicArrayContainer.hpp"
+
 #include "Object.hpp"
 
 namespace ECSCore
 {
 class Entity;
 class Object;
-
-namespace FunLib
-{
-
-template<typename tElement>
-class IObjectContainer
-{
-  public:
-    virtual ~IObjectContainer() = default;
-
-    virtual void                          Add(std::weak_ptr<tElement> object)                                       = 0;
-    virtual void                          EraseExpired()                                                            = 0;
-    virtual std::weak_ptr<tElement>       Find(const std::function<bool(std::weak_ptr<tElement>)>& predicate)       = 0;
-    virtual std::weak_ptr<const tElement> Find(const std::function<bool(std::weak_ptr<tElement>)>& predicate) const = 0;
-    virtual void                 ForEach(const std::function<void(std::weak_ptr<tElement>)>& function) const        = 0;
-    [[nodiscard]] virtual size_t Size() const                                                                       = 0;
-};
-
-class TDynamicArrayContainer : public IObjectContainer<Object>
-{
-  public:
-    void Add(std::weak_ptr<Object> object) override
-    {
-        objectRegistry.emplace_back(object);
-    }
-
-    void EraseExpired() override
-    {
-        std::erase_if(objectRegistry, [](const std::weak_ptr<Object>& weakObject) { return weakObject.expired(); });
-    }
-    std::weak_ptr<Object> Find(const std::function<bool(std::weak_ptr<Object>)>& predicate) override
-    {
-        const auto iterator = std::ranges::find_if(objectRegistry, predicate);
-        return iterator != objectRegistry.end() ? std::weak_ptr<Object>{*iterator} : std::weak_ptr<Object>{};
-    }
-    std::weak_ptr<const Object> Find(const std::function<bool(std::weak_ptr<Object>)>& predicate) const override
-    {
-        const auto iterator = std::ranges::find_if(objectRegistry, predicate);
-        return iterator != objectRegistry.end() ? std::weak_ptr<const Object>{*iterator}
-                                                : std::weak_ptr<const Object>{};
-    }
-    void ForEach(const std::function<void(std::weak_ptr<Object>)>& function) const override
-    {
-        std::ranges::for_each(objectRegistry, function);
-    }
-    [[nodiscard]] size_t Size() const override
-    {
-        return objectRegistry.size();
-    }
-
-  private:
-    std::vector<std::weak_ptr<Object>> objectRegistry;
-};
-
-} // namespace FunLib
 
 class IObjectManager
 {
@@ -81,7 +28,7 @@ class IObjectManager
     virtual void EraseExpiredWeakPointers()                               = 0;
 };
 
-template<typename tObjectType, typename tObjectContainer = FunLib::TDynamicArrayContainer>
+template<typename tObjectType, typename tObjectContainer = FunLib::TDynamicArrayContainer<tObjectType>>
 class TObjectManager : public IObjectManager
 {
   public:
@@ -124,10 +71,10 @@ bool TObjectManager<tObjectType, tObjectContainer>::PostAttachObjectToComponent(
 template<typename tObjectType, typename tObjectContainer>
 bool TObjectManager<tObjectType, tObjectContainer>::TryAttachObjectToComponent(std::weak_ptr<Object> object)
 {
-    if (std::dynamic_pointer_cast<tObjectType>(object.lock()))
+    if (const auto castedObject = std::dynamic_pointer_cast<tObjectType>(object.lock()))
     {
-        objectRegistry.Add(object);
-        return PostAttachObjectToComponent(object);
+        objectRegistry.Add(castedObject);
+        return PostAttachObjectToComponent(castedObject);
     }
     return false;
 }
