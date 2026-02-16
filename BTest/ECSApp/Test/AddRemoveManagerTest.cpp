@@ -29,8 +29,9 @@ int main()
     appInstance->AddObjectToEntity(entityTwoName, toggleActionType, actionNameTwo);
 
     std::vector<std::string> actionList;
-    if (!appInstance->GetVisibleActions(entityOneName, actionList) && !actionList.empty())
+    if (!appInstance->GetVisibleActions(entityOneName, actionList) || actionList.empty())
     {
+        std::println(std::cerr, "Action list for entity one is empty or failed to retrieve.");
         return 1;
     }
     if (actionList[0] != actionNameOne.str)
