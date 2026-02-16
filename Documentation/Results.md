@@ -19,3 +19,15 @@ Type `help` in the CLI to view available commands, or see `CliAppState.hpp`.
 ## Decision-making in git history
 
 You can follow the decision-making process in the git history.
+
+## Time spent
+According to git history and commit messages:
+
+- Project Setup ~5 hrs
+- ECS Core MVP ~7 hrs
+- Architecture Refactoring ~8 hrs
+- Testing & Profiling ~3 hrs
+- ECS App + CLI Module ~8 hrs
+- Sparse Array Container ~5 hrs
+
+Overall: ~36h  
